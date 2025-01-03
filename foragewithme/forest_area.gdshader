@@ -1,21 +1,17 @@
 shader_type spatial;
 
-
-void vertex() {
-	if (VERTEX.y > 0.3){
-		VERTEX.x += sin(TIME * 5.0 + VERTEX.y) * 0.03;
-		VERTEX.z += sin(TIME * 3.0) * 0.2 ;
-		}
-	// Called for every vertex the material is visible on.
-}
+uniform vec3 top_color : source_color = vec3(0.5, 1.0, 0.47);    // Green
+uniform vec3 bottom_color : source_color = vec3(1.0, 0.58, 0.24); // Brown
+uniform float transition_offset = 0.7;  // Controls where the middle of the gradient appears
+uniform float transition_smoothness = 5.0;  // Controls how sharp the gradient is
 
 void fragment() {
-	vec3 color;
-	color.r = 0.5;
-	color.g = 0.0;
-	color.b = 0.0;
-	ALBEDO = vec3(color.r,color.g,color.b);
-	// Called for every pixel the material is visible on.
+    // Create a smoothed and offset gradient
+    float gradient = clamp((UV.y - transition_offset) * transition_smoothness + 0.5, 0.0, 1.0);
+    
+    vec3 final_color = mix(bottom_color, top_color, gradient);
+    
+    ALBEDO = final_color;
 }
 
 //void light() {
