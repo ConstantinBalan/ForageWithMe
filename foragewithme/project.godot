@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="ForageWithMe"
-run/main_scene="res://forest_area.tscn"
+run/main_scene="res://Scenes/forest_area.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
 
