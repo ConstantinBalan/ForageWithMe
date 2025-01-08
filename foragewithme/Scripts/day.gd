@@ -18,6 +18,7 @@ extends DirectionalLight3D
 # Transition angles
 @export_group("Transition Angles")
 @export var sunset_start_angle: float = -20.0  # When sunset begins
+@export var show_stars_angle :float = -5.0 # When stars start to show
 @export var twilight_start_angle: float = 10.0  # When twilight begins
 @export var night_start_angle: float = 30.0    # When night begins
 
@@ -49,26 +50,12 @@ func _process(delta):
 	var sky_color: Color
 	var horizon_color: Color
 	sky_color_shift(current_angle, sky_color, horizon_color)
+	setup_star_particles(current_angle, delta)
 	# Add to _process
-	var fog_density = remap(current_angle, sunset_start_angle, night_start_angle, 0.0, 0.03)
-	fog_density = clamp(fog_density, 0.0, 0.03)
-	if star_particles:
-		# Start showing stars during twilight
-		if current_angle <= twilight_start_angle:
-			# Stars completely invisible during day
-			star_particles.visible = false
-		else:
-			print("making stars now")
-			# Make stars visible and control their fade-in
-			star_particles.visible = true
-			# Adjust emission box size based on time of day
-			# This creates a nice effect of stars "appearing" from further away
-			var emission_box_size = remap(current_angle, twilight_start_angle, night_start_angle, 10.0, 50.0)
-			var particle_material = star_particles.process_material as ParticleProcessMaterial
-			particle_material.emission_box_extents = Vector3(emission_box_size, 5.0, emission_box_size)
-	# Calculate color based on which phase we're in
+	#var fog_density = remap(current_angle, sunset_start_angle, night_start_angle, 0.0, 0.03)
+	#fog_density = clamp(fog_density, 0.0, 0.03)
 
-	environment.fog_density = fog_density
+	#environment.fog_density = fog_density
 	var time = deg_to_rad(0.05)
 	rotate_x(time)
 
@@ -99,3 +86,39 @@ func sky_color_shift(current_light_angle, sky_color, horizon_color):
 	
 	environment.sky.sky_material.set_sky_top_color(sky_color)
 	environment.sky.sky_material.set_sky_horizon_color(horizon_color)
+
+func setup_star_particles(current_light_angle, delta):
+	var dawn_alpha = 0.0
+	var dusk_alpha = 1.0
+	if !star_particles:
+		push_warning("The star particles object is not set to the 3D light")
+		return
+		
+	var particle_material = star_particles.process_material as ParticleProcessMaterial
+	
+	particle_material.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
+	particle_material.emission_box_extents = Vector3(500, 50, 500)
+	particle_material.scale_min = 2.0
+	particle_material.scale_max = 3.0
+	particle_material.turbulence_enabled = true
+	particle_material.turbulence_noise_strength = 0.1
+	particle_material.turbulence_noise_scale = 1.0
+	
+	if star_particles:
+		var material = star_particles.draw_pass_1.material as StandardMaterial3D
+		var current_alpha = material.albedo_color.a
+		var new_alpha = dawn_alpha
+		# Start showing stars during twilight
+		if current_light_angle >= show_stars_angle:
+			new_alpha = lerp(current_alpha, dusk_alpha, delta * 0.01)
+			print("making stars now")
+
+		else:
+			new_alpha = lerp(current_alpha, dawn_alpha, delta)
+		
+		material.albedo_color.a = new_alpha
+
+			# Adjust emission box size based on time of day
+			# This creates a nice effect of stars "appearing" from further away
+			#var emission_box_size = remap(current_light_angle, twilight_start_angle, night_start_angle, 100.0, 500.0)
+			#particle_material.emission_box_extents = Vector3(emission_box_size, 50.0, emission_box_size)
