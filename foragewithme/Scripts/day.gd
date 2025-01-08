@@ -51,6 +51,7 @@ func _process(delta):
 	var horizon_color: Color
 	sky_color_shift(current_angle, sky_color, horizon_color)
 	setup_star_particles(current_angle, delta)
+	#TODO: Make fog
 	# Add to _process
 	#var fog_density = remap(current_angle, sunset_start_angle, night_start_angle, 0.0, 0.03)
 	#fog_density = clamp(fog_density, 0.0, 0.03)
@@ -108,7 +109,6 @@ func setup_star_particles(current_light_angle, delta):
 		var material = star_particles.draw_pass_1.material as StandardMaterial3D
 		var current_alpha = material.albedo_color.a
 		var new_alpha = dawn_alpha
-		# Start showing stars during twilight
 		if current_light_angle >= show_stars_angle:
 			new_alpha = lerp(current_alpha, dusk_alpha, delta * 0.01)
 			print("making stars now")
@@ -117,8 +117,3 @@ func setup_star_particles(current_light_angle, delta):
 			new_alpha = lerp(current_alpha, dawn_alpha, delta)
 		
 		material.albedo_color.a = new_alpha
-
-			# Adjust emission box size based on time of day
-			# This creates a nice effect of stars "appearing" from further away
-			#var emission_box_size = remap(current_light_angle, twilight_start_angle, night_start_angle, 100.0, 500.0)
-			#particle_material.emission_box_extents = Vector3(emission_box_size, 50.0, emission_box_size)
