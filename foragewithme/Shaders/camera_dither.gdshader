@@ -8,7 +8,6 @@ uniform float pixel_size : hint_range(1.0, 16.0, 1.0) = 1.0;
 uniform float dither_strength : hint_range(0.0, 1.0) = 0.5;
 uniform int palette_size = 8;
 
-// Function to find the closest color in our palette
 vec3 find_closest_palette_color(vec3 input_color) {
     float closest_distance = 999999.0;
     vec3 closest_color = input_color;
@@ -28,17 +27,17 @@ vec3 find_closest_palette_color(vec3 input_color) {
 }
 
 void fragment() {
-    // Step 1: Pixelate the image
+	// Pixelate
     vec2 pixel_position = SCREEN_UV / SCREEN_PIXEL_SIZE;
     pixel_position = floor(pixel_position / pixel_size) * pixel_size;
     vec2 pixelated_uv = pixel_position * SCREEN_PIXEL_SIZE;
     vec4 pixelated = texture(SCREEN_TEXTURE, pixelated_uv);
 
-    // Step 2: Apply dithering to the pixelated result
+    // Dither pixels
     vec2 dither_uv = pixelated_uv * SCREEN_PIXEL_SIZE * 8.0;
     float dither = texture(dither_pattern, mod(dither_uv, vec2(1.0))).r - 0.5;
 
-    // Step 3: Apply dithering and find closest palette color
+    // Dither scene, apply color to sub-viewport
     vec3 dithered = pixelated.rgb + vec3(dither * dither_strength);
     vec3 final_color = find_closest_palette_color(dithered);
 
