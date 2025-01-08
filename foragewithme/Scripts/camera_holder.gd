@@ -6,7 +6,7 @@ func _input(event):
 	if event is InputEventMouseMotion:
 		# Define rotation limits in radians
 		var z_low = deg_to_rad(-50)
-		var z_high = deg_to_rad(70)
+		var z_high = deg_to_rad(90)
 		
 		# Calculate the proposed new rotation
 		var rotation_amount = deg_to_rad(event.relative.y * -0.04)

@@ -26,6 +26,9 @@ extends DirectionalLight3D
 @export var sunlight_sunset: float = 0.5
 @export var sunlight_twilight: float = 0.25
 @export var sunlight_night: float = 0.0
+
+@export var star_particles: GPUParticles3D
+
 # Reference to the environment (we'll set this in _ready)
 var environment: Environment
 
@@ -36,6 +39,7 @@ func _ready():
 		environment = world_environment.environment
 	if !environment:
 		push_warning("No WorldEnvironment found.")
+	environment.fog_density = 0.0
 
 
 
@@ -47,10 +51,27 @@ func _process(delta):
 	var current_angle = rotation_degrees.x
 	var sky_color: Color
 	var horizon_color: Color
-	
+	# Add to _process
+	var fog_density = remap(current_angle, sunset_start_angle, night_start_angle, 0.0, 0.03)
+	fog_density = clamp(fog_density, 0.0, 0.03)
+	if star_particles:
+		# Start showing stars during twilight
+		if current_angle <= twilight_start_angle:
+			# Stars completely invisible during day
+			star_particles.visible = false
+		else:
+			print("making stars now")
+			# Make stars visible and control their fade-in
+			star_particles.visible = true
+			# Adjust emission box size based on time of day
+			# This creates a nice effect of stars "appearing" from further away
+			var emission_box_size = remap(current_angle, twilight_start_angle, night_start_angle, 10.0, 50.0)
+			var particle_material = star_particles.process_material as ParticleProcessMaterial
+			particle_material.emission_box_extents = Vector3(emission_box_size, 5.0, emission_box_size)
 	# Calculate color based on which phase we're in
 	if current_angle <= sunset_start_angle:
 		# Full day
+		fog_density = 0.0
 		sky_color = day_sky_color
 		horizon_color = day_horizon_color
 		light_energy = sunlight_daytime
@@ -81,7 +102,8 @@ func _process(delta):
 	# Apply our calculated colors
 	environment.sky.sky_material.set_sky_top_color(sky_color)
 	environment.sky.sky_material.set_sky_horizon_color(horizon_color)
-	var time = deg_to_rad(0.1)
+	environment.fog_density = fog_density
+	var time = deg_to_rad(0.05)
 	rotate_x(time)
 
 
