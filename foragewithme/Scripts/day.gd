@@ -24,11 +24,13 @@ extends DirectionalLight3D
 
 @export_group("Sunlight Brightness")
 @export var sunlight_daytime: float = 1.0
-@export var sunlight_sunset: float = 0.5
-@export var sunlight_twilight: float = 0.25
+@export var sunlight_sunset: float = 0.4
+@export var sunlight_twilight: float = 0.12
 @export var sunlight_night: float = 0.0
 
 @export var star_particles: GPUParticles3D
+@export var moon_light: DirectionalLight3D
+
 
 var environment: Environment
 
@@ -51,6 +53,9 @@ func _process(delta):
 	var horizon_color: Color
 	sky_color_shift(current_angle, sky_color, horizon_color)
 	setup_star_particles(current_angle, delta)
+	handle_moonlight(current_angle)
+	update_moon_position(current_angle)
+	
 	#TODO: Make fog
 	# Add to _process
 	#var fog_density = remap(current_angle, sunset_start_angle, night_start_angle, 0.0, 0.03)
@@ -111,9 +116,39 @@ func setup_star_particles(current_light_angle, delta):
 		var new_alpha = dawn_alpha
 		if current_light_angle >= show_stars_angle:
 			new_alpha = lerp(current_alpha, dusk_alpha, delta * 0.01)
-			print("making stars now")
-
 		else:
 			new_alpha = lerp(current_alpha, dawn_alpha, delta)
-		
 		material.albedo_color.a = new_alpha
+
+func handle_moonlight(current_angle: float) -> void:
+	if !moon_light:
+		return
+		
+	# Moon becomes visible during twilight
+	var moon_intensity = 0.0
+	if current_angle >= show_stars_angle and current_angle <= 90:  # After sunset
+		moon_intensity = remap(current_angle, show_stars_angle, 90, 0.0, 0.6)
+	elif current_angle >= 90 and current_angle <= 185:  # Before sunrise
+		moon_intensity = remap(current_angle, 90, 185, 0.6, 0.0)
+	print("Moonlight Intensity: " + str(moon_light.light_energy))
+	print("Sun Intensity: " + str(light_energy))
+
+
+	# Moon color shifts from slight yellow to blue-white through the night
+	var moon_color = Color(0.9, 0.9, 1.0)  # Blue-white base
+	if current_angle < 45.0:
+		print("Moon is warm right now")
+		# Warmer color during twilight/early evening
+		moon_color = Color(1.0, 0.95, 0.8)
+		
+	moon_light.light_energy = moon_intensity
+	moon_light.light_color = moon_color
+
+func update_moon_position(sun_angle: float):
+	if !moon_light:
+		return
+		
+	# Moon is opposite the sun (180 degrees offset)
+	# If sun is at -45°, moon will be at 135°
+	# If sun is at 30°, moon will be at 210° (-150°)
+	moon_light.rotation_degrees = Vector3(sun_angle + 180, 0, 0)
