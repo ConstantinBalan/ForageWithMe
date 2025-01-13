@@ -18,10 +18,21 @@ config/features=PackedStringArray("4.3", "Forward Plus")
 
 buses/default_bus_layout="res://Audio/default_bus_layout.tres"
 
+[autoload]
+
+PlayerDataManager="*res://Scripts/Autoloaded Scripts/player_data_manager.gd"
+GameManager="*res://Scripts/Autoloaded Scripts/game_manager.gd"
+WorldManager="*res://Scripts/Autoloaded Scripts/world_manager.gd"
+
 [display]
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
+
+[global_group]
+
+player="The group assigned to the player and player related objects"
+movement_system="The group for the movement system"
 
 [input]
 
@@ -48,5 +59,10 @@ window/size/viewport_height=1080
 Sprint={
 "deadzone": 0.5,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194325,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
+]
+}
+Interact={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":69,"key_label":0,"unicode":101,"location":0,"echo":false,"script":null)
 ]
 }

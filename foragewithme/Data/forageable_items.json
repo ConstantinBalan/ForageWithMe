@@ -1,0 +1,17 @@
+{
+  "Wild Berries": {
+	"description": "A cluster of sweet berries.",
+	"seasonality": ["Spring", "Summer"],
+	"nutritional_value": 5
+  },
+  "Mushrooms": {
+	"description": "An earthy fungus.",
+	"seasonality": ["Autumn"],
+	"nutritional_value": 3
+  },
+  "Oak Log": {
+	"description": "A sturdy piece of oak wood.",
+	"seasonality": ["All"],
+	"resource_type": "Wood"
+  }
+}

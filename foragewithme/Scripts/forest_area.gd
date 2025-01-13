@@ -1,5 +1,8 @@
 extends Node
 
+@onready var systems = $Systems
+@onready var player = $Player
+
 # Store references to your level scenes
 var level_scenes = {
    # "forest": preload("res://levels/forest_level.tscn"),
@@ -11,6 +14,10 @@ var level_scenes = {
 var current_level = null
 
 func _ready():
+	print("Game is ready.")
+	# Potentially initialize systems here if they need explicit setup
+	# systems.get_node("ForagingSystem").initialize()
+	#PlayerDataManager.load_game_data()
 	pass
 	# Get reference to your SubViewport
 	#var viewport = $CanvasLayer/SubViewportContainer/SubViewport
@@ -34,3 +41,6 @@ func change_level(level_name: String, viewport: SubViewport):
 	# For example, setting up the player's starting position
 	if new_level.has_method("initialize"):
 		new_level.initialize()
+		
+func _on_save_game_requested(): # Example signal from a UI button
+	PlayerDataManager.save_game_data()

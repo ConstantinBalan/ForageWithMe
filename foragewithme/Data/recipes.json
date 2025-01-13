@@ -1,0 +1,20 @@
+{
+  "Wooden Axe": {
+	"ingredients": {
+	  "Wood": 5,
+	  "Stone": 2
+	},
+	"output": {
+	  "Wooden Axe": 1
+	}
+  },
+  "Berry Pie": {
+	"ingredients": {
+	  "Berries": 10,
+	  "Flour": 1
+	},
+	"output": {
+	  "Berry Pie": 1
+	}
+  }
+}

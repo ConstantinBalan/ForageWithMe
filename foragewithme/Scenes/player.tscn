@@ -1,7 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://bb8377dwunwqf"]
+[gd_scene load_steps=9 format=3 uid="uid://bb8377dwunwqf"]
 
-[ext_resource type="Script" path="res://Scripts/player.gd" id="1_ognxo"]
+[ext_resource type="Script" path="res://Scripts/ECS/Entity Scripts/PlayerEntity.gd" id="1_auqpi"]
+[ext_resource type="Script" path="res://Scenes/PlayerMovement.gd" id="1_x1u35"]
 [ext_resource type="Script" path="res://Scripts/camera_holder.gd" id="2_4g6ra"]
+[ext_resource type="Script" path="res://Scripts/ECS/Component Scripts/InventoryComponent.gd" id="3_mchhm"]
+[ext_resource type="Script" path="res://Scripts/ECS/Component Scripts/RelationshipComponent.gd" id="4_xtydd"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_w54bw"]
 
@@ -13,7 +16,16 @@ material = SubResource("StandardMaterial3D_5e1bu")
 
 [node name="Player" type="CharacterBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.09701, 0)
-script = ExtResource("1_ognxo")
+script = ExtResource("1_x1u35")
+
+[node name="Entity" type="Node" parent="."]
+script = ExtResource("1_auqpi")
+
+[node name="InventoryComponent" type="Node" parent="Entity"]
+script = ExtResource("3_mchhm")
+
+[node name="RelationshipComponent" type="Node" parent="Entity"]
+script = ExtResource("4_xtydd")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_w54bw")
