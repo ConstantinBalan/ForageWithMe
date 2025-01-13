@@ -3,7 +3,7 @@ extends Node
 @export var interaction_distance = 2.0
 
 func _physics_process(delta):
-	if Input.is_action_just_pressed("interact"):
+	if Input.is_action_just_pressed("Interact"):
 		interact_with_nearby()
 
 func interact_with_nearby():

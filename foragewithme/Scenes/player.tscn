@@ -37,10 +37,15 @@ mesh = SubResource("CylinderMesh_ro5f0")
 transform = Transform3D(0.0531036, 0.27239, 0, -0.95823, 0.0150954, 0, 0, 0, 0.488708, 0.684643, 0.542375, -0.0149267)
 mesh = SubResource("CylinderMesh_ro5f0")
 
-[node name="CameraHolder" type="Node3D" parent="."]
-transform = Transform3D(0.946559, 0.32253, 0, -0.32253, 0.946559, 0, 0, 0, 1, -1.01335, 2.0592, 0)
+[node name="CameraHolder" type="SpringArm3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, -0.432032, 0)
+spring_length = 3.134
+margin = 0.5
 script = ExtResource("2_4g6ra")
 
 [node name="Camera3D" type="Camera3D" parent="CameraHolder"]
-transform = Transform3D(0.00141286, 0.565356, -0.824846, 0.00106395, 0.824845, 0.565358, 0.999998, -0.00167637, 0.00056388, -2.41418, 1.07277, 0)
+transform = Transform3D(0.999998, -0.00174533, 0, 0.00174533, 0.999998, 0, 0, 0, 1, 1.43058e-07, 0, 3.27279)
 current = true
+
+[node name="CameraHolder3" type="Node3D" parent="."]
+transform = Transform3D(0.946559, 0.32253, 0, -0.32253, 0.946559, 0, 0, 0, 1, -1.01335, 2.0592, 0)
