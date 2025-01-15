@@ -130,14 +130,14 @@ func handle_moonlight(current_angle: float) -> void:
 		moon_intensity = remap(current_angle, show_stars_angle, 90, 0.0, 0.6)
 	elif current_angle >= 90 and current_angle <= 185:  # Before sunrise
 		moon_intensity = remap(current_angle, 90, 185, 0.6, 0.0)
-	print("Moonlight Intensity: " + str(moon_light.light_energy))
-	print("Sun Intensity: " + str(light_energy))
+	#print("Moonlight Intensity: " + str(moon_light.light_energy))
+	#print("Sun Intensity: " + str(light_energy))
 
 
 	# Moon color shifts from slight yellow to blue-white through the night
 	var moon_color = Color(0.9, 0.9, 1.0)  # Blue-white base
 	if current_angle < 45.0:
-		print("Moon is warm right now")
+		#print("Moon is warm right now")
 		# Warmer color during twilight/early evening
 		moon_color = Color(1.0, 0.95, 0.8)
 		

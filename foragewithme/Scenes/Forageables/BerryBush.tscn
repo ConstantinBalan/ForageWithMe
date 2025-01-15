@@ -1,17 +1,30 @@
-[gd_scene load_steps=4 format=3 uid="uid://dghjyi4wyxwpv"]
+[gd_scene load_steps=6 format=3 uid="uid://dghjyi4wyxwpv"]
 
 [ext_resource type="Script" path="res://Scripts/ECS/Component Scripts/ForageableComponent.gd" id="1_ip5x8"]
+[ext_resource type="Script" path="res://Scripts/ECS/Component Scripts/InteractableComponent.gd" id="2_dqsb3"]
+[ext_resource type="Script" path="res://Scripts/ECS/Component Scripts/FloatingPromptComponent.gd" id="2_ohox1"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_7g6g1"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_6rwhb"]
 
-[node name="BerryBush" type="StaticBody3D"]
+[node name="BerryBush" type="StaticBody3D" groups=["interactable"]]
 
 [node name="ForageableComponent" type="Node" parent="."]
 script = ExtResource("1_ip5x8")
-item_type = "Berries"
-quantity_available = 5
+
+[node name="InteractableComponent" type="Node" parent="."]
+script = ExtResource("2_dqsb3")
+
+[node name="FloatingPromptComponent" type="Node3D" parent="InteractableComponent"]
+script = ExtResource("2_ohox1")
+prompt_offset = Vector3(0, 1.2, 0)
+
+[node name="Label3D" type="Label3D" parent="InteractableComponent/FloatingPromptComponent"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+no_depth_test = true
+text = "tata"
+font_size = 24
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.511285, 0)

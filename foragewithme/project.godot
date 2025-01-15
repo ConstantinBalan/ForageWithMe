@@ -33,6 +33,8 @@ window/size/viewport_height=1080
 
 player="The group assigned to the player and player related objects"
 movement_system="The group for the movement system"
+interactable="Interactable objects in the world"
+interaction_system=""
 
 [input]
 

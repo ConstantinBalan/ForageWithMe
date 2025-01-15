@@ -1,26 +1,21 @@
 extends Node
 
-signal interaction_started(interactable)
-signal interaction_ended(interactable)
+# This is a marker component to identify interactable objects
+# The actual interaction logic is handled by the InteractionSystem
 
-var intercation_range := 2.0
-var current_interactable = null
+@onready var floating_prompt = $FloatingPromptComponent
 
-func _physics_process(delta):
-	#Raycast or area check for interactable item or person
-	var nearest = find_nearest_interactable()
-	if nearest != current_interactable:
-		if current_interactable:
-			interaction_ended.emit(current_interactable)
-		current_interactable = nearest
-		if current_interactable:
-			interaction_started.emit(current_interactable)
+func _ready():
+	print("InteractableComponent initialized")
+	add_to_group("interactable")
 	
-
-func find_nearest_interactable():
-	#Get a list of items or people with the interactable method, and find the one with the closeest distance
-	pass
-	
-func interact():
-	if current_interactable and current_interactable.has_method("interact"):
-		current_interactable.interact()
+	if not floating_prompt:
+		push_error("InteractableComponent: FloatingPromptComponent not found!")
+		
+func show_interaction_prompt(text: String):
+	if floating_prompt:
+		floating_prompt.show_prompt(text)
+		
+func hide_interaction_prompt():
+	if floating_prompt:
+		floating_prompt.hide_prompt()

@@ -5,7 +5,6 @@ extends Entity
 @onready var inventory_component = $InventoryComponent
 @onready var relationship_component = $RelationshipComponent
 
-
 @onready var movement_system = get_tree().get_first_node_in_group("movement_system")
 
 const SPEED = 5.0
@@ -35,7 +34,7 @@ func _input(event):
 
 	if event.is_action_pressed("Sprint"):
 		is_sprinting = true
-	else:
+	elif event.is_action_released("Sprint"):
 		is_sprinting = false
 
 func _physics_process(delta):
@@ -54,7 +53,6 @@ func handle_movement_intent(delta):
 	# Get input direction
 	var input_dir = Input.get_vector("Move Backward", "Move Forward", "Move Left", "Move Right")
 	var direction = (owner.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-	print(owner)
 	movement_system.apply_movement(owner, direction, player_speed)
 
 	# Apply movement to the CharacterBody3D

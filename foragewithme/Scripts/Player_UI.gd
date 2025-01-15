@@ -14,7 +14,7 @@ var ui_stack = []  # For managing multiple UI elements
 func _ready():
 	for panel in $Panels.get_children():
 		panel.hide()
-	for prompt in $Prompts.get_children():
+	for prompt in $InteractionPromptUI.get_children():
 		prompt.hide()
 #		inventory_panel.closed.connect(on_panel_closed)
 #		dialogue_panel.closed.connect(on_panel_closed)
