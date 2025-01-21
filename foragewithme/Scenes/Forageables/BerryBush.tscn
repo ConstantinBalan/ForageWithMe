@@ -9,6 +9,7 @@
 [sub_resource type="SphereMesh" id="SphereMesh_6rwhb"]
 
 [node name="BerryBush" type="StaticBody3D" groups=["interactable"]]
+collision_layer = 3
 
 [node name="ForageableComponent" type="Node" parent="."]
 script = ExtResource("1_ip5x8")

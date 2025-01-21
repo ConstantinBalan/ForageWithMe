@@ -6,69 +6,46 @@ extends Entity
 @onready var relationship_component = $RelationshipComponent
 
 @onready var movement_system = get_tree().get_first_node_in_group("movement_system")
+@onready var input_system = get_tree().get_first_node_in_group("player_input_system")
 
+# Movement constants (exposed for systems to use)
 const SPEED = 5.0
-const SPRINT_SPEED = 20.0
+const SPRINT_SPEED = 10.0
 const JUMP_VELOCITY = 4.5
 const FOV_NORMAL = 75.0
 const FOV_SPRINT = 85.0
 const FOV_LERP_SPEED = 5.0
 
-var player_speed = SPEED
-var is_sprinting = false
-
 func _ready():
-	player_speed = clampf(SPEED, 5.0, 10.0)
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	add_to_group("player")
-
-func _input(event):
-	if event is InputEventMouseMotion:
-		owner.rotate_y(deg_to_rad(event.relative.x * -0.04)) # Rotate the CharacterBody3D
-
-	if event.is_action_pressed("ui_cancel"):
-		get_tree().quit()
-
-	if event.is_action_pressed("ui_accept"):
-		jump()
-
-	if event.is_action_pressed("Sprint"):
-		is_sprinting = true
-	elif event.is_action_released("Sprint"):
-		is_sprinting = false
-
-func _physics_process(delta):
-	handle_movement_intent(delta)
-	handle_fov(delta)
-	movement_system.apply_gravity(owner, delta) # owner is the CharacterBody3D
-	owner.move_and_slide()
-
-func handle_movement_intent(delta):
-	# Determine target speed based on input
-	if is_sprinting and character_body.is_on_floor():
-		player_speed = move_toward(player_speed, SPRINT_SPEED, delta * 10)
+	
+	if input_system:
+		input_system.sprint_started.connect(_on_sprint_started)
+		input_system.sprint_ended.connect(_on_sprint_ended)
+		input_system.jump_requested.connect(_on_jump_requested)
 	else:
-		player_speed = move_toward(player_speed, SPEED, delta * 10)
+		push_error("PlayerEntity: No input system found!")
+	
+	if movement_system:
+		movement_system.movement_state_changed.connect(_on_movement_state_changed)
+	else:
+		push_error("PlayerEntity: No movement system found!")
 
-	# Get input direction
-	var input_dir = Input.get_vector("Move Backward", "Move Forward", "Move Left", "Move Right")
-	var direction = (owner.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-	movement_system.apply_movement(owner, direction, player_speed)
+func _on_sprint_started():
+	if camera_3d:
+		var tween = create_tween()
+		tween.tween_property(camera_3d, "fov", FOV_SPRINT, 0.2)
 
-	# Apply movement to the CharacterBody3D
-	#if direction:
-	#	character_body.velocity.x = direction.x * player_speed
-	#	character_body.velocity.z = direction.z * player_speed
-	#else:
-	#	character_body.velocity.x = move_toward(character_body.velocity.x, 0, player_speed)
-	#	character_body.velocity.z = move_toward(character_body.velocity.z, 0, player_speed)
+func _on_sprint_ended():
+	if camera_3d:
+		var tween = create_tween()
+		tween.tween_property(camera_3d, "fov", FOV_NORMAL, 0.2)
 
-func jump():
-	if character_body.is_on_floor():
-		movement_system.apply_jump(owner, JUMP_VELOCITY)
+func _on_jump_requested(_player):
+	if movement_system:
+		movement_system.jump(self)
 
-func handle_fov(delta):
-	var target_fov = FOV_NORMAL
-	if is_sprinting and character_body.is_on_floor():
-		target_fov = FOV_SPRINT
-	camera_3d.fov = lerp(camera_3d.fov, target_fov, FOV_LERP_SPEED * delta)
+func _on_movement_state_changed(_entity, state: String):
+	# Handle any visual or audio feedback based on movement state
+	pass

@@ -1,7 +1,5 @@
 extends Entity
 
-@onready var relationship_target_component = $RelationshipTargetComponent
-
 func _ready():
 	print("Villager is ready.")
 

@@ -1,7 +1,6 @@
-[gd_scene load_steps=9 format=3 uid="uid://bb8377dwunwqf"]
+[gd_scene load_steps=8 format=3 uid="uid://bb8377dwunwqf"]
 
 [ext_resource type="Script" path="res://Scripts/ECS/Entity Scripts/PlayerEntity.gd" id="1_auqpi"]
-[ext_resource type="Script" path="res://Scenes/PlayerMovement.gd" id="1_x1u35"]
 [ext_resource type="Script" path="res://Scripts/camera_holder.gd" id="2_4g6ra"]
 [ext_resource type="Script" path="res://Scripts/ECS/Component Scripts/InventoryComponent.gd" id="3_mchhm"]
 [ext_resource type="Script" path="res://Scripts/ECS/Component Scripts/RelationshipComponent.gd" id="4_xtydd"]
@@ -16,7 +15,6 @@ material = SubResource("StandardMaterial3D_5e1bu")
 
 [node name="Player" type="CharacterBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.09701, 0)
-script = ExtResource("1_x1u35")
 
 [node name="Entity" type="Node" parent="."]
 script = ExtResource("1_auqpi")
@@ -31,6 +29,7 @@ script = ExtResource("4_xtydd")
 shape = SubResource("CapsuleShape3D_w54bw")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+visible = false
 mesh = SubResource("CylinderMesh_ro5f0")
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
@@ -46,6 +45,10 @@ script = ExtResource("2_4g6ra")
 [node name="Camera3D" type="Camera3D" parent="CameraHolder"]
 transform = Transform3D(0.999998, -0.00174533, 0, 0.00174533, 0.999998, 0, 0, 0, 1, 1.43058e-07, 0, 3.27279)
 current = true
+
+[node name="RayCast3D" type="RayCast3D" parent="CameraHolder/Camera3D"]
+transform = Transform3D(0.999998, -0.00174533, 7.62908e-11, 0, -4.37114e-08, -1, 0.00174533, 0.999998, -4.37113e-08, -0.000371651, -0.212932, -0.324285)
+collision_mask = 2
 
 [node name="CameraHolder3" type="Node3D" parent="."]
 transform = Transform3D(0.946559, 0.32253, 0, -0.32253, 0.946559, 0, 0, 0, 1, -1.01335, 2.0592, 0)
