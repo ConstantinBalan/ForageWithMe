@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ForageableItem" load_steps=4 format=3 uid="uid://ogrkbrfmkc51"]
+
+[ext_resource type="Script" path="res://Scripts/Resources/forageable_item.gd" id="1_a3e47"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_i7ks7"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_mj660"]
+
+[resource]
+script = ExtResource("1_a3e47")
+name = "Winterberry"
+description = "A berry bush that can tough out cold weather"
+mesh = SubResource("CapsuleMesh_mj660")
+collision_shape = SubResource("CapsuleShape3D_i7ks7")
+scale = Vector3(1, 1, 1)

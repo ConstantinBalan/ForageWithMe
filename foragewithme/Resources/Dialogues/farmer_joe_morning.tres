@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Resources/dialogue_data.gd" id="1_d4r3f"]
+
+[resource]
+script = ExtResource("1_d4r3f")
+dialogue_id = "farmer_joe_morning"
+speaker = "Farmer Joe"
+text = "Good morning! Nothing beats the fresh morning air on the farm."
+required_relationship_level = 0
+required_time_of_day = "wake_up"
+required_items = []
+required_quests_completed = []
+options = [
+{
+"text": "Good morning! How are the crops doing?",
+"next_dialogue": "farmer_joe_crops",
+"requirements": {}
+},
+{
+"text": "You're up early!",
+"next_dialogue": "farmer_joe_early",
+"requirements": {}
+},
+{
+"text": "Would you like some help with the farm work?",
+"next_dialogue": "farmer_joe_help",
+"requirements": {
+"relationship_level": 3
+}
+}
+]
+responses = {
+"farmer_joe_crops": "The crops are coming along nicely! This weather has been perfect for growing.",
+"farmer_joe_early": "Early to bed, early to rise! That's the farmer's way.",
+"farmer_joe_help": "That's mighty kind of you! I could use some help watering the crops."
+}
+relationship_change = 0.1
+speaker_emotion = "happy"
+animation = "talk_happy"

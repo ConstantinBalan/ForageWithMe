@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Resources/recipe_data.gd" id="1_r4r3f"]
+[ext_resource type="AudioStream" path="res://Assets/Sounds/cooking.wav" id="2_a1r3f"]
+
+[resource]
+script = ExtResource("1_r4r3f")
+name = "Mushroom Soup"
+description = "A hearty mushroom soup. Perfect for cold days!"
+ingredients = {
+"mushroom": 3,
+"herb": 1,
+"water": 1
+}
+required_tool = "cooking_pot"
+crafting_time = 5.0
+result_item = "mushroom_soup"
+result_amount = 1
+category = "Food"
+difficulty = 2
+success_sound = ExtResource("2_a1r3f")

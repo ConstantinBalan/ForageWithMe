@@ -23,7 +23,6 @@ buses/default_bus_layout="res://Audio/default_bus_layout.tres"
 PlayerDataManager="*res://Scripts/Autoloaded Scripts/player_data_manager.gd"
 GameManager="*res://Scripts/Autoloaded Scripts/game_manager.gd"
 WorldManager="*res://Scripts/Autoloaded Scripts/world_manager.gd"
-ComponentManager="*res://Scripts/ECS/Component Scripts/ComponentManager.gd"
 
 [display]
 
@@ -34,6 +33,10 @@ window/size/viewport_height=1080
 
 movie_writer/mjpeg_quality=0.5
 movie_writer/movie_file="C:/Users/Dragos/Desktop/GodotMovies/Test.avi"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/resource_creator/plugin.cfg")
 
 [global_group]
 

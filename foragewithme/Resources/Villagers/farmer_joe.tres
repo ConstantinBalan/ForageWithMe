@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="VillagerData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Resources/villager_data.gd" id="1_v5r3f"]
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_1"]
+
+[resource]
+script = ExtResource("1_v5r3f")
+name = "Farmer Joe"
+description = "A friendly farmer who loves his crops and animals."
+default_mood = "happy"
+mesh = SubResource("CapsuleMesh_1")
+scale = Vector3(1, 1.8, 1)
+schedule = {
+"05:00": "wake_up",
+"06:00": "work",
+"12:00": "lunch",
+"13:00": "work",
+"18:00": "leisure",
+"21:00": "sleep"
+}
+locations = {
+"home": Vector3(10, 0, 10),
+"leisure": Vector3(0, 0, 5),
+"work": Vector3(-10, 0, -10)
+}
+traits = ["friendly", "hardworking", "early_riser"]
+liked_items = ["mushroom", "berry", "fish"]
+disliked_items = ["trash", "rotten_food"]

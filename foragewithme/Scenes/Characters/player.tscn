@@ -1,0 +1,39 @@
+[gd_scene load_steps=5 format=3 uid="uid://dwb5dtnmdeslb"]
+
+[ext_resource type="Script" path="res://Scripts/OOP/Characters/Player.gd" id="1_player"]
+[ext_resource type="Script" path="res://Scripts/camera_holder.gd" id="2_camera"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_player"]
+radius = 0.3
+height = 1.8
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_oujj1"]
+
+[node name="Player" type="CharacterBody3D"]
+collision_layer = 2
+script = ExtResource("1_player")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.871446, 0)
+shape = SubResource("CapsuleShape3D_player")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.899037, 0)
+mesh = SubResource("CapsuleMesh_oujj1")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(-0.00218169, -0.999998, 0, 0.999998, -0.00218169, 0, 0, 0, 1, 0.455713, 1.3926, 0)
+mesh = SubResource("CapsuleMesh_oujj1")
+
+[node name="CameraHolder" type="SpringArm3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 1.6, 0)
+spring_length = 4.0
+margin = 0.25
+script = ExtResource("2_camera")
+
+[node name="Camera3D" type="Camera3D" parent="CameraHolder"]
+current = true
+
+[node name="InteractionRayCast" type="RayCast3D" parent="CameraHolder/Camera3D"]
+target_position = Vector3(0, 0, -2)
+collide_with_areas = true
