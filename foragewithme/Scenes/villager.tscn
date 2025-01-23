@@ -14,6 +14,8 @@ collision_layer = 3
 [node name="Entity" type="Node" parent="."]
 script = ExtResource("1_hcy84")
 
+[node name="VillagerComponent" type="Node" parent="Entity"]
+
 [node name="InteractableComponent" type="Node" parent="Entity"]
 script = ExtResource("2_3j02c")
 

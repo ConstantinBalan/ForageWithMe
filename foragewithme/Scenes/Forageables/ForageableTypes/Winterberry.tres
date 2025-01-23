@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ForageableItem" load_steps=5 format=3 uid="uid://0wf683vikogh"]
+
+[ext_resource type="Script" path="res://Scripts/Resources/forageable_item.gd" id="1_k5f62"]
+[ext_resource type="Texture2D" uid="uid://dqn26g1khgkwo" path="res://Images/pngtree-watercolor-red-winter-berry-christmas-holly-branches-decor-png-image_13372992.png" id="2_relgm"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ifnnh"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_kshrf"]
+
+[resource]
+script = ExtResource("1_k5f62")
+name = "Winterberry"
+texture = ExtResource("2_relgm")
+description = "The winterberry, is a species of holly native to eastern North America in the United States and southeast Canada, from Newfoundland west to Ontario and Minnesota, and south to Alabama"
+mesh = SubResource("SphereMesh_kshrf")
+collision_shape = SubResource("SphereShape3D_ifnnh")
+scale = null

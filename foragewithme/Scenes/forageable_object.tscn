@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://dv3n3fq4g4ffh"]
+
+[ext_resource type="Script" path="res://Scripts/forageable_object.gd" id="1_4m3wd"]
+
+[node name="ForageableObject" type="StaticBody3D"]
+script = ExtResource("1_4m3wd")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]

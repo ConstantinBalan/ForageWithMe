@@ -1,5 +1,7 @@
 extends Entity
 
+var inventory = {}
+
 func _ready():
 	print("Villager is ready.")
 

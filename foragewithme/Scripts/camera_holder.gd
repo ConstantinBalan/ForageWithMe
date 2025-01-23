@@ -1,6 +1,7 @@
 extends SpringArm3D
 
 @onready var camera: Camera3D = $Camera3D
+@onready var inventory_panel = get_tree().get_first_node_in_group("inventory_panel")
 
 # Camera constraints for vertical rotation
 const VERTICAL_LOW = deg_to_rad(-45)   # Maximum look-up angle
@@ -11,6 +12,7 @@ const MOUSE_SENSITIVITY = 0.04
 var is_orbiting: bool = false
 var is_transitioning: bool = false
 var vertical_rotation: float = 0.0
+var camera_enabled: bool = true  # New flag to control camera movement
 
 # Transition state
 var transition_weight: float = 0.0
@@ -38,6 +40,10 @@ func _ready():
 	position = Vector3(0, ARM_HEIGHT, 0)
 	rotation.y = INITIAL_Y_ROTATION
 	vertical_rotation = 0.0
+	
+	if inventory_panel:
+		inventory_panel.inventory_toggled.connect(_on_inventory_toggled)
+		print("CameraHolder: Connected to inventory panel")
 
 func create_shape() -> Shape3D:
 	var shape = SphereShape3D.new()
@@ -54,6 +60,9 @@ func normalize_angle(angle: float) -> float:
 	return angle
 
 func _input(event):
+	if !camera_enabled:
+		return
+		
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT:
 		if event.pressed and !is_transitioning:
 			start_orbit()
@@ -118,6 +127,10 @@ func end_orbit():
 		is_transitioning = false
 		rotation.y = INITIAL_Y_ROTATION
 	)
+
+func _on_inventory_toggled(is_open: bool):
+	camera_enabled = !is_open
+	print("CameraHolder: Camera enabled = ", camera_enabled)
 
 func _physics_process(_delta):
 	if is_transitioning:

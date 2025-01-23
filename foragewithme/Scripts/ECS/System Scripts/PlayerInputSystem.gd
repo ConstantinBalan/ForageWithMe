@@ -4,6 +4,7 @@ signal interaction_requested(player)
 signal sprint_started
 signal sprint_ended
 signal jump_requested(player)
+signal inventory_toggled
 
 var is_sprinting = false
 
@@ -29,6 +30,9 @@ func _input(event):
 		
 	if event.is_action_pressed("Jump"):
 		jump_requested.emit(player)
+		
+	if event.is_action_pressed("Inventory"):
+		inventory_toggled.emit()
 		
 	if event is InputEventMouseMotion:
 		handle_mouse_motion(player, event)
