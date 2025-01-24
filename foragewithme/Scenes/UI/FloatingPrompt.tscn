@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://dxxxxxxxxxxx"]
+
+[ext_resource type="Script" path="res://Scripts/OOP/UI/FloatingPrompt.gd" id="1_xxxxx"]
+[ext_resource type="AnimationLibrary" path="res://Resources/Animations/floating_prompt_library.tres" id="2_xxxxx"]
+
+[node name="FloatingPrompt" type="Node3D"]
+script = ExtResource("1_xxxxx")
+
+[node name="Label3D" type="Label3D" parent="."]
+billboard = 1
+no_depth_test = true
+text = ""
+font_size = 48
+outline_size = 4
+outline_modulate = Color(0, 0, 0, 1)
+pixel_size = 0.005
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": ExtResource("2_xxxxx")
+}

@@ -27,7 +27,7 @@ prompt_offset = Vector3(0, 1.2, 0)
 [node name="Label3D" type="Label3D" parent="InteractableComponent/FloatingPromptComponent"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
 no_depth_test = true
-text = "tata"
+text = "Placeholder"
 font_size = 24
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]

@@ -17,3 +17,4 @@ description = "A common forest mushroom. Good for cooking!"
 mesh = SubResource("CapsuleMesh_1")
 collision_shape = SubResource("CapsuleShape3D_1")
 scale = Vector3(1, 1, 1)
+has_collision = false

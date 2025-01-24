@@ -8,3 +8,4 @@ class_name ForageableItem
 @export var mesh: Mesh  # For 3D representation
 @export var collision_shape: Shape3D  # For physical collision
 @export var scale: Vector3 = Vector3.ONE  # Scale of the physical object
+@export var has_collision: bool = false  # Whether the player can walk through this forageable

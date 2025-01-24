@@ -8,20 +8,47 @@ signal foraged(item)
 
 var is_available: bool = true
 var time_since_foraged: float = 0.0
+var mesh_instance: MeshInstance3D
+var collision_shape: CollisionShape3D
 
 func _ready():
 	super._ready()
 	add_to_group("forageables")
+	
+	# Set up collision layers based on forageable_data
+	collision_layer = 2  # Layer 2 for raycast interaction
+	if forageable_data and forageable_data.has_collision:
+		collision_layer |= 1  # Add layer 1 for physical collision
+		collision_mask = 1  # Collide with player and other physical objects
+	else:
+		collision_mask = 0  # Don't collide with anything physically
+	
 	if forageable_data:
-		# Set up mesh and collision from resource
-		var mesh_instance = $MeshInstance3D
-		if mesh_instance and forageable_data.mesh:
-			mesh_instance.mesh = forageable_data.mesh
-			mesh_instance.scale = forageable_data.scale
-		
-		var collision_shape = $CollisionShape3D
-		if collision_shape and forageable_data.collision_shape:
-			collision_shape.shape = forageable_data.collision_shape
+		setup_mesh()
+		setup_collision()
+
+func setup_mesh() -> void:
+	# Create or get existing mesh instance
+	mesh_instance = get_node_or_null("MeshInstance3D")
+	if !mesh_instance:
+		mesh_instance = MeshInstance3D.new()
+		mesh_instance.name = "MeshInstance3D"
+		add_child(mesh_instance)
+	
+	if forageable_data.mesh:
+		mesh_instance.mesh = forageable_data.mesh
+		mesh_instance.scale = forageable_data.scale
+
+func setup_collision() -> void:
+	# Create or get existing collision shape
+	collision_shape = get_node_or_null("CollisionShape3D")
+	if !collision_shape:
+		collision_shape = CollisionShape3D.new()
+		collision_shape.name = "CollisionShape3D"
+		add_child(collision_shape)
+	
+	if forageable_data.collision_shape:
+		collision_shape.shape = forageable_data.collision_shape
 
 func _process(delta: float) -> void:
 	if not is_available:
@@ -40,10 +67,11 @@ func forage(player: Player) -> void:
 		is_available = false
 		time_since_foraged = 0.0
 		emit_signal("foraged", forageable_data)
-		# Hide or change model to show item was foraged
-		visible = false
+		if mesh_instance:
+			mesh_instance.visible = false
 
 func respawn() -> void:
 	is_available = true
-	visible = true
+	if mesh_instance:
+		mesh_instance.visible = true
 	time_since_foraged = 0.0

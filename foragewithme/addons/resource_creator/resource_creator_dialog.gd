@@ -16,7 +16,8 @@ const RESOURCE_TYPES = {
 			"texture": {"type": "texture2d", "default": null},
 			"mesh": {"type": "mesh", "default": null},
 			"collision_shape": {"type": "shape3d", "default": null},
-			"scale": {"type": "vector3", "default": Vector3.ONE}
+			"scale": {"type": "vector3", "default": Vector3.ONE},
+			"has_collision": {"type": "bool", "default": false}
 		}
 	},
 	"Villager": {
@@ -149,6 +150,11 @@ func _setup_properties(properties: Dictionary) -> void:
 				control.step = 0.1
 				control.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			
+			"bool":
+				control = CheckBox.new()
+				control.button_pressed = prop.default
+				control.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			
 			"enum":
 				control = OptionButton.new()
 				for opt in prop.options:
@@ -243,6 +249,8 @@ func _on_confirmed() -> void:
 				value = control.text
 			"float":
 				value = control.value
+			"bool":
+				value = control.button_pressed
 			"enum":
 				value = control.get_item_text(control.selected)
 			"range":

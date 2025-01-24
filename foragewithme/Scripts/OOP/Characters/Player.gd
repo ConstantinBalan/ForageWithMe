@@ -3,30 +3,54 @@ class_name Player
 
 @onready var camera_holder = $CameraHolder
 @onready var camera = $CameraHolder/Camera3D
+@onready var interaction_ray = $InteractionRay
 
 const FOV_NORMAL = 75.0
 const FOV_SPRINT = 85.0
 const FOV_LERP_SPEED = 5.0
 const GRAVITY = -9.8 * 2 # Increased gravity for better game feel
+const INTERACTION_DISTANCE = 10.0 # Maximum distance for interaction raycast
+const HEAD_HEIGHT = 1.5 # Approximate height for ray origin
 
 var is_sprinting: bool = false
 var player_speed = speed
+var current_interactable: GameObject = null
 
 func _ready():
 	super._ready()
 	player_speed = clampf(speed, 5.0, 10.0)
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	add_to_group("player")
+	
+	# Setup interaction raycast
+	if !interaction_ray:
+		interaction_ray = RayCast3D.new()
+		add_child(interaction_ray)
+		interaction_ray.name = "InteractionRay"
+	
+	# Position the ray at head height
+	interaction_ray.position.y = HEAD_HEIGHT
+	interaction_ray.target_position = Vector3(0, 0, -INTERACTION_DISTANCE)
+	interaction_ray.collision_mask = 2 # Layer 2 for interactable objects
+	interaction_ray.debug_shape_custom_color = Color.BLUE
+	interaction_ray.debug_shape_thickness = 2
 
 func _physics_process(delta):
 	handle_movement_intent(delta)
 	handle_fov(delta)
+	update_interaction_ray()
+	check_interaction()
 	
 	# Apply gravity
 	if not is_on_floor():
 		velocity.y += GRAVITY * delta
 	
 	move_and_slide()
+
+func update_interaction_ray() -> void:
+	# Make the ray follow camera rotation
+	var cam_basis = camera.global_transform.basis
+	interaction_ray.global_transform.basis = cam_basis
 
 func handle_movement_intent(delta):
 	# Determine target speed based on input
@@ -53,6 +77,21 @@ func handle_fov(delta):
 		target_fov = FOV_SPRINT
 	camera.fov = lerp(camera.fov, target_fov, FOV_LERP_SPEED * delta)
 
+func check_interaction():
+	var collider = interaction_ray.get_collider()
+	if collider and collider is GameObject:
+		if current_interactable != collider:
+			# Hide label of previous interactable
+			if current_interactable:
+				current_interactable.hide_hover_label()
+			# Show label of new interactable
+			collider.show_hover_label()
+		current_interactable = collider
+	else:
+		if current_interactable:
+			current_interactable.hide_hover_label()
+		current_interactable = null
+
 func _input(event):
 	if event is InputEventMouseMotion:
 		rotate_y(deg_to_rad(event.relative.x * -0.04)) # Rotate the player with mouse
@@ -67,3 +106,7 @@ func _input(event):
 		is_sprinting = true
 	elif event.is_action_released("Sprint"):
 		is_sprinting = false
+	
+	# Handle interaction input
+	if event.is_action_pressed("Interact") and current_interactable:
+		current_interactable.interact_with(self)
