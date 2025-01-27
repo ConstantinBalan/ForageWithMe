@@ -1,7 +1,7 @@
 extends SpringArm3D
 
 @onready var camera: Camera3D = $Camera3D
-@onready var inventory_panel = get_tree().get_first_node_in_group("inventory_panel")
+@onready var inventory_controller = get_tree().get_first_node_in_group("inventory_controller")
 
 # Camera constraints for vertical rotation
 const VERTICAL_LOW = deg_to_rad(-45)   # Maximum look-up angle
@@ -41,9 +41,9 @@ func _ready():
 	rotation.y = INITIAL_Y_ROTATION
 	vertical_rotation = 0.0
 	
-	if inventory_panel:
-		inventory_panel.inventory_toggled.connect(_on_inventory_toggled)
-		print("CameraHolder: Connected to inventory panel")
+	if inventory_controller:
+		inventory_controller.inventory_toggled.connect(_on_inventory_toggled)
+		print("CameraHolder: Connected to inventory controller")
 
 func create_shape() -> Shape3D:
 	var shape = SphereShape3D.new()
@@ -59,7 +59,7 @@ func normalize_angle(angle: float) -> float:
 		angle += PI * 2.0
 	return angle
 
-func _input(event):
+func _input(event: InputEvent) -> void:
 	if !camera_enabled:
 		return
 		
@@ -69,30 +69,33 @@ func _input(event):
 		elif !event.pressed and is_orbiting:
 			end_orbit()
 	
-	# Only handle mouse motion if we're not transitioning
-	if event is InputEventMouseMotion and !is_transitioning:
+	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		handle_mouse_motion(event)
 
-func handle_mouse_motion(event: InputEventMouseMotion):
-	# Always handle vertical rotation
-	var delta_vertical = deg_to_rad(event.relative.y * -MOUSE_SENSITIVITY)
+func handle_mouse_motion(event: InputEventMouseMotion) -> void:
+	# Handle vertical rotation
+	var delta_vertical = event.relative.y * MOUSE_SENSITIVITY * 0.01
 	vertical_rotation = clamp(
-		vertical_rotation + delta_vertical,
+		vertical_rotation - delta_vertical,
 		VERTICAL_LOW,
 		VERTICAL_HIGH
 	)
 	rotation.x = vertical_rotation
 	
-	# Only handle horizontal rotation in orbit mode
+	# Handle horizontal rotation
+	var delta_horizontal = event.relative.x * MOUSE_SENSITIVITY * 0.01
 	if is_orbiting:
-		var delta_horizontal = deg_to_rad(event.relative.x * -MOUSE_SENSITIVITY)
-		rotation.y += delta_horizontal
+		# In orbit mode, rotate around the player
+		rotation.y -= delta_horizontal
+	else:
+		# In normal mode, only rotate if not orbiting
+		rotation.y -= delta_horizontal
 
-func start_orbit():
+func start_orbit() -> void:
 	is_orbiting = true
 	is_transitioning = false
 
-func end_orbit():
+func end_orbit() -> void:
 	if !is_orbiting:
 		return
 	
@@ -128,11 +131,13 @@ func end_orbit():
 		rotation.y = INITIAL_Y_ROTATION
 	)
 
-func _on_inventory_toggled(is_open: bool):
+func _on_inventory_toggled(is_open: bool) -> void:
 	camera_enabled = !is_open
-	print("CameraHolder: Camera enabled = ", camera_enabled)
+	if is_open and is_orbiting:
+		end_orbit()
+	print("Camera enabled: ", camera_enabled)
 
-func _physics_process(_delta):
+func _physics_process(_delta: float) -> void:
 	if is_transitioning:
 		# During transition, only interpolate the Y rotation
 		rotation.y = lerp_angle(start_transform.basis.get_euler().y, target_y_rotation, transition_weight)

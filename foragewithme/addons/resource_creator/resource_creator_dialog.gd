@@ -15,6 +15,7 @@ const RESOURCE_TYPES = {
 			"description": {"type": "text", "default": ""},
 			"texture": {"type": "texture2d", "default": null},
 			"mesh": {"type": "mesh", "default": null},
+			"collected_mesh": {"type": "mesh", "default": null, "depends_on": "has_collision"},
 			"collision_shape": {"type": "shape3d", "default": null},
 			"scale": {"type": "vector3", "default": Vector3.ONE},
 			"has_collision": {"type": "bool", "default": false}
@@ -113,7 +114,33 @@ func _on_type_selected(index: int) -> void:
 	var type = resource_type.get_item_text(index)
 	_setup_properties(RESOURCE_TYPES[type].properties)
 
-func _setup_properties(properties: Dictionary) -> void:
+func _setup_properties(properties: Dictionary, preserve_values: bool = false) -> void:
+	# Store current values if we need to preserve them
+	var stored_values = {}
+	if preserve_values:
+		for prop_name in current_properties:
+			var control = current_properties[prop_name]
+			match properties[prop_name].type:
+				"string", "text":
+					stored_values[prop_name] = control.text
+				"float", "range":
+					stored_values[prop_name] = control.value
+				"bool":
+					stored_values[prop_name] = control.button_pressed
+				"enum":
+					stored_values[prop_name] = control.selected
+				"string_array":
+					stored_values[prop_name] = control.text
+				"dictionary":
+					stored_values[prop_name] = control.text
+				"mesh", "texture2d", "shape3d":
+					stored_values[prop_name] = control.edited_resource
+				"vector3":
+					var x = control.get_child(0).value
+					var y = control.get_child(1).value
+					var z = control.get_child(2).value
+					stored_values[prop_name] = Vector3(x, y, z)
+	
 	# Clear existing properties
 	for child in properties_container.get_children():
 		child.queue_free()
@@ -122,6 +149,25 @@ func _setup_properties(properties: Dictionary) -> void:
 	# Add new properties
 	for prop_name in properties:
 		var prop = properties[prop_name]
+		
+		# Skip properties that depend on unchecked boolean properties
+		if prop.has("depends_on"):
+			var dependency = properties[prop.depends_on]
+			if dependency.type == "bool":
+				var checkbox = current_properties.get(prop.depends_on)
+				# If the checkbox doesn't exist yet (because it comes later in order),
+				# use the stored value or default value
+				var is_checked = false
+				if checkbox:
+					is_checked = checkbox.button_pressed
+				elif preserve_values and stored_values.has(prop.depends_on):
+					is_checked = stored_values[prop.depends_on]
+				else:
+					is_checked = dependency.default
+					
+				if not is_checked:
+					continue
+		
 		var hbox = HBoxContainer.new()
 		hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		properties_container.add_child(hbox)
@@ -135,49 +181,52 @@ func _setup_properties(properties: Dictionary) -> void:
 		match prop.type:
 			"string":
 				control = LineEdit.new()
-				control.text = prop.default
+				control.text = stored_values.get(prop_name, prop.default) if preserve_values else prop.default
 				control.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			
 			"text":
 				control = TextEdit.new()
-				control.text = prop.default
+				control.text = stored_values.get(prop_name, prop.default) if preserve_values else prop.default
 				control.custom_minimum_size = Vector2(0, 100)
 				control.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			
 			"float":
 				control = SpinBox.new()
-				control.value = prop.default
+				control.value = stored_values.get(prop_name, prop.default) if preserve_values else prop.default
 				control.step = 0.1
 				control.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			
 			"bool":
 				control = CheckBox.new()
-				control.button_pressed = prop.default
+				control.button_pressed = stored_values.get(prop_name, prop.default) if preserve_values else prop.default
 				control.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				# Connect signal to update dependent properties
+				if properties.values().any(func(p): return p.get("depends_on") == prop_name):
+					control.toggled.connect(_on_bool_property_toggled.bind(properties, prop_name))
 			
 			"enum":
 				control = OptionButton.new()
 				for opt in prop.options:
 					control.add_item(opt)
-				control.selected = prop.options.find(prop.default)
+				control.selected = stored_values.get(prop_name, prop.options.find(prop.default)) if preserve_values else prop.options.find(prop.default)
 				control.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			
 			"range":
 				control = HSlider.new()
 				control.min_value = prop.min
 				control.max_value = prop.max
-				control.value = prop.default
+				control.value = stored_values.get(prop_name, prop.default) if preserve_values else prop.default
 				control.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			
 			"string_array":
 				control = LineEdit.new()
-				control.text = ",".join(prop.default)
+				control.text = stored_values.get(prop_name, ",".join(prop.default)) if preserve_values else ",".join(prop.default)
 				control.placeholder_text = "comma,separated,values"
 				control.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			
 			"dictionary":
 				control = TextEdit.new()
-				control.text = str(prop.default)
+				control.text = stored_values.get(prop_name, str(prop.default)) if preserve_values else str(prop.default)
 				control.custom_minimum_size = Vector2(0, 100)
 				control.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 				
@@ -185,46 +234,58 @@ func _setup_properties(properties: Dictionary) -> void:
 				var resource_picker = EditorResourcePicker.new()
 				resource_picker.base_type = "Mesh"
 				resource_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				if preserve_values and stored_values.has(prop_name):
+					resource_picker.edited_resource = stored_values[prop_name]
 				control = resource_picker
 				
 			"texture2d":
 				var resource_picker = EditorResourcePicker.new()
 				resource_picker.base_type = "Texture2D"
 				resource_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				if preserve_values and stored_values.has(prop_name):
+					resource_picker.edited_resource = stored_values[prop_name]
 				control = resource_picker
 				
 			"shape3d":
 				var resource_picker = EditorResourcePicker.new()
 				resource_picker.base_type = "Shape3D"
 				resource_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				if preserve_values and stored_values.has(prop_name):
+					resource_picker.edited_resource = stored_values[prop_name]
 				control = resource_picker
 				
 			"vector3":
-				var vector_box = HBoxContainer.new()
-				vector_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				var hbox_vector = HBoxContainer.new()
+				hbox_vector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				
+				var stored_vector = stored_values.get(prop_name, prop.default) if preserve_values else prop.default
 				
 				var x = SpinBox.new()
+				x.value = stored_vector.x
 				x.step = 0.1
-				x.value = prop.default.x if prop.default else 0.0
 				x.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-				vector_box.add_child(x)
 				
 				var y = SpinBox.new()
+				y.value = stored_vector.y
 				y.step = 0.1
-				y.value = prop.default.y if prop.default else 0.0
 				y.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-				vector_box.add_child(y)
 				
 				var z = SpinBox.new()
+				z.value = stored_vector.z
 				z.step = 0.1
-				z.value = prop.default.z if prop.default else 0.0
 				z.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-				vector_box.add_child(z)
 				
-				control = vector_box
+				hbox_vector.add_child(x)
+				hbox_vector.add_child(y)
+				hbox_vector.add_child(z)
+				control = hbox_vector
 		
 		hbox.add_child(control)
 		current_properties[prop_name] = control
+
+func _on_bool_property_toggled(button_pressed: bool, properties: Dictionary, prop_name: String) -> void:
+	# Re-setup properties when a boolean property changes, preserving values
+	_setup_properties(properties, true)
 
 func _on_confirmed() -> void:
 	var type = resource_type.get_item_text(resource_type.selected)

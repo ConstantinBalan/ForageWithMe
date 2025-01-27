@@ -1,10 +1,9 @@
 extends CanvasLayer
 
-@onready var inventory_panel = $Panels/InventoryPanel
 @onready var dialogue_panel = $Panels/DialoguePanel
-@onready var interaction_prompt = $Prompts/InteractionPrompt
+#@onready var interaction_prompt = $Prompts/InteractionPrompt
 @onready var relationship_display = $HUD/RelationshipDisplay
-@onready var tool_bar = $HUD/ToolBar
+#@onready var tool_bar = $HUD/ToolBar
 
 # Track UI states
 var active_panel = null

@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://dghjyi4wyxwpv"]
 
 [ext_resource type="Script" path="res://Scripts/ECS/Component Scripts/ForageableComponent.gd" id="1_ip5x8"]
-[ext_resource type="Resource" uid="uid://0wf683vikogh" path="res://Scenes/Forageables/ForageableTypes/Winterberry.tres" id="2_cx7xw"]
+[ext_resource type="Resource" uid="uid://0wf683vikogh" path="res://Resources/Forageables/Winterberry.tres" id="2_cx7xw"]
 [ext_resource type="Script" path="res://Scripts/ECS/Component Scripts/InteractableComponent.gd" id="2_dqsb3"]
 [ext_resource type="Script" path="res://Scripts/ECS/Component Scripts/FloatingPromptComponent.gd" id="2_ohox1"]
 

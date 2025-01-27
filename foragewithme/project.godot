@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="ForageWithMe"
-run/main_scene="res://Scenes/forest_area.tscn"
+run/main_scene="res://Scenes/Zones/forest_area.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 
 [audio]
@@ -41,11 +41,9 @@ enabled=PackedStringArray("res://addons/resource_creator/plugin.cfg")
 [global_group]
 
 player="The group assigned to the player and player related objects"
-movement_system="The group for the movement system"
 interactable="Interactable objects in the world"
-interaction_system=""
 villager=""
-inventory_panel=""
+inventory_ui=""
 
 [input]
 

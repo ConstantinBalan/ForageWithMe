@@ -1,110 +1,119 @@
-extends Panel
+extends Control
 
 signal item_moved(from_index: int, to_index: int)
-signal inventory_toggled(is_open: bool)
 
-@onready var grid_container = $GridContainer
-@onready var inventory_system = get_tree().get_first_node_in_group("inventory_system")
+@onready var grid_container = $Panel/GridContainer
+@onready var panel = $Panel
 
 var inventory_slots = []
-var dragged_item = null
-var original_slot = null
+var dragged_slot = null
 var is_open = false
 
 func _ready():
 	print("InventoryPanel: Initializing...")
 	
-	if !grid_container:
-		push_error("InventoryPanel: No GridContainer found!")
-		return
-		
-	# Hide the panel initially
+	# Initial setup
 	visible = false
 	is_open = false
 	
-	# Set up grid container properties
-	grid_container.custom_minimum_size = Vector2(400, 300)  # Adjust overall size
-	grid_container.add_theme_constant_override("h_separation", 8)  # Add some spacing
+	# Configure the main Control node (self)
+	anchor_right = 1.0
+	anchor_bottom = 1.0
+	mouse_filter = Control.MOUSE_FILTER_STOP
+	
+	# Configure the Panel
+	var panel_style = StyleBoxFlat.new()
+	panel_style.bg_color = Color(0.1, 0.1, 0.1, 0.9)
+	panel_style.corner_radius_top_left = 8
+	panel_style.corner_radius_top_right = 8
+	panel_style.corner_radius_bottom_left = 8
+	panel_style.corner_radius_bottom_right = 8
+	panel.add_theme_stylebox_override("panel", panel_style)
+	
+	# Configure GridContainer
+	grid_container.columns = 6
+	grid_container.add_theme_constant_override("h_separation", 8)
 	grid_container.add_theme_constant_override("v_separation", 8)
 	
-	# Make sure we can receive input
-	mouse_filter = Control.MOUSE_FILTER_STOP
+	# Make sure Panel can receive input but GridContainer passes it through
+	panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	grid_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	
 	# Initialize inventory slots
 	for slot in grid_container.get_children():
-		if !slot.has_node("ItemDisplay"):
-			push_error("InventoryPanel: Slot is missing ItemDisplay node!")
-			continue
-		if !slot.has_node("CountLabel"):
-			push_error("InventoryPanel: Slot is missing CountLabel node!")
-			continue
-			
 		inventory_slots.append(slot)
 		slot.gui_input.connect(_on_slot_gui_input.bind(slot))
-		
-	if inventory_system:
-		inventory_system.inventory_changed.connect(_on_inventory_changed)
-		print("InventoryPanel: Connected to inventory system")
-	else:
-		push_error("InventoryPanel: No inventory system found!")
-		
-	# Connect to player input system
-	var input_system = get_tree().get_first_node_in_group("player_input_system")
-	if input_system:
-		input_system.inventory_toggled.connect(toggle_inventory)
-		print("InventoryPanel: Connected to player input system")
-	else:
-		push_error("InventoryPanel: No player input system found!")
+		slot.mouse_filter = Control.MOUSE_FILTER_STOP
+		if slot.has_node("ItemDisplay"):
+			slot.get_node("ItemDisplay").mouse_filter = Control.MOUSE_FILTER_PASS
+		if slot.has_node("CountLabel"):
+			slot.get_node("CountLabel").mouse_filter = Control.MOUSE_FILTER_PASS
+	
+	# Calculate sizes
+	var slot_size = Vector2(64, 64)
+	var spacing = Vector2(8, 8)
+	var columns = grid_container.columns
+	var rows = ceil(float(inventory_slots.size()) / columns)
+	
+	# Calculate grid size
+	var grid_width = (slot_size.x * columns) + (spacing.x * (columns - 1))
+	var grid_height = (slot_size.y * rows) + (spacing.y * (rows - 1))
+	
+	# Set minimum sizes with padding
+	var padding = Vector2(32, 32)
+	grid_container.custom_minimum_size = Vector2(grid_width, grid_height)
+	panel.custom_minimum_size = Vector2(
+		grid_width + padding.x * 2,
+		grid_height + padding.y * 2
+	)
+	
+	# Position panel in top left with margin
+	var margin = Vector2(20, 20)  # Margin from screen edges
+	panel.anchor_left = 0
+	panel.anchor_top = 0
+	panel.anchor_right = 0
+	panel.anchor_bottom = 0
+	panel.position = margin
+	
+	# Position grid inside panel with padding
+	grid_container.position = padding
+
+func _gui_input(_event: InputEvent) -> void:
+	if is_open:
+		get_viewport().set_input_as_handled()
 
 func _on_slot_gui_input(event: InputEvent, slot):
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT:
-			if event.pressed:
-				_start_drag(slot)
-			else:
-				_end_drag(slot)
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		if event.pressed:
+			print("Slot clicked at index: ", inventory_slots.find(slot))
+			if !slot.item_data.is_empty():
+				dragged_slot = slot
+		else:
+			if dragged_slot and dragged_slot != slot:
+				var from_index = inventory_slots.find(dragged_slot)
+				var to_index = inventory_slots.find(slot)
+				if from_index != -1 and to_index != -1:
+					emit_signal("item_moved", from_index, to_index)
+			dragged_slot = null
+	
+	get_viewport().set_input_as_handled()
 
-func _start_drag(slot):
-	if !slot.item_data or slot.item_data.size() == 0:
+func update_slot(slot_index: int, item_data: Dictionary) -> void:
+	if slot_index < 0 or slot_index >= inventory_slots.size():
 		return
 		
-	dragged_item = slot.item_data
-	original_slot = slot
+	var slot = inventory_slots[slot_index]
+	slot.item_data = item_data
 	
-	# Create and setup drag preview
-	var preview = slot.get_drag_preview()
-	if preview:
-		get_viewport().set_drag_preview(preview)
-		
-	print("Started dragging item from slot")
-
-func _end_drag(target_slot):
-	if !dragged_item or !original_slot:
-		return
-		
-	if target_slot != original_slot:
-		var from_index = inventory_slots.find(original_slot)
-		var to_index = inventory_slots.find(target_slot)
-		
-		if from_index >= 0 and to_index >= 0:
-			# Swap items between slots
-			var target_item = target_slot.item_data.duplicate()
-			target_slot.item_data = dragged_item.duplicate()
-			original_slot.item_data = target_item
-			
-			emit_signal("item_moved", from_index, to_index)
-			print("Moved item from slot ", from_index, " to slot ", to_index)
+	if slot.has_node("ItemDisplay"):
+		var texture_rect = slot.get_node("ItemDisplay")
+		texture_rect.texture = item_data.get("texture", null)
 	
-	dragged_item = null
-	original_slot = null
-
-func _on_inventory_changed(inventory_data):
-	print("InventoryPanel: Inventory changed")
-	for i in range(min(inventory_slots.size(), inventory_data.size())):
-		inventory_slots[i].item_data = inventory_data[i]
+	if slot.has_node("CountLabel"):
+		var count_label = slot.get_node("CountLabel")
+		var count = item_data.get("count", 0)
+		count_label.text = str(count) if count > 1 else ""
 
 func toggle_inventory():
 	is_open = !is_open
 	visible = is_open
-	emit_signal("inventory_toggled", is_open)

@@ -9,7 +9,7 @@ func _ready():
 	add_to_group("game_object_label_manager")
 
 func show_label(game_object: GameObject, text: String) -> void:
-	if not is_instance_valid(game_object):
+	if not is_instance_valid(game_object) or text.is_empty():
 		return
 		
 	# If there's already a prompt for this object, update its text

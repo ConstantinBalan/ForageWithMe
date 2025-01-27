@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://dwb5dtnmdeslb"]
+[gd_scene load_steps=6 format=3 uid="uid://dwb5dtnmdeslb"]
 
 [ext_resource type="Script" path="res://Scripts/OOP/Characters/Player.gd" id="1_player"]
 [ext_resource type="Script" path="res://Scripts/camera_holder.gd" id="2_camera"]
+[ext_resource type="Script" path="res://Scripts/PlayerInventoryController.gd" id="3_ni677"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_player"]
 radius = 0.3
@@ -35,8 +36,12 @@ script = ExtResource("2_camera")
 current = true
 
 [node name="InteractionRay" type="RayCast3D" parent="CameraHolder/Camera3D"]
+unique_name_in_owner = true
 target_position = Vector3(0, 0, -5)
 collision_mask = 2
 collide_with_areas = true
 debug_shape_custom_color = Color(0, 0, 1, 1)
 debug_shape_thickness = 1
+
+[node name="Inventory" type="Node" parent="." groups=["player"]]
+script = ExtResource("3_ni677")

@@ -1,6 +1,5 @@
 extends Node
 
-@onready var systems = $Systems
 @onready var player = $Player
 
 # Store references to your level scenes

@@ -3,7 +3,7 @@ class_name Player
 
 @onready var camera_holder = $CameraHolder
 @onready var camera = $CameraHolder/Camera3D
-@onready var interaction_ray = $InteractionRay
+@onready var interaction_ray = %InteractionRay
 
 const FOV_NORMAL = 75.0
 const FOV_SPRINT = 85.0
@@ -80,13 +80,18 @@ func handle_fov(delta):
 func check_interaction():
 	var collider = interaction_ray.get_collider()
 	if collider and collider is GameObject:
-		if current_interactable != collider:
+		var hover_text = collider.get_hover_text()
+		if hover_text.is_empty():
+			if current_interactable:
+				current_interactable.hide_hover_label()
+			current_interactable = null
+		elif current_interactable != collider:
 			# Hide label of previous interactable
 			if current_interactable:
 				current_interactable.hide_hover_label()
 			# Show label of new interactable
 			collider.show_hover_label()
-		current_interactable = collider
+			current_interactable = collider
 	else:
 		if current_interactable:
 			current_interactable.hide_hover_label()

@@ -1,41 +1,58 @@
 extends Panel
 
-var item_data: Dictionary = {}
-@onready var item_display = $ItemDisplay
-@onready var count_label = $CountLabel
+var item_data = {}
+var default_style: StyleBoxFlat
+var hover_style: StyleBoxFlat
+var is_hovered = false
 
 func _ready():
 	# Set minimum size for the slot
-	custom_minimum_size = Vector2(64, 64)  # Make slots bigger
+	custom_minimum_size = Vector2(64, 64)
 	
-	# Make sure the panel can receive input
+	# Create styles
+	default_style = StyleBoxFlat.new()
+	default_style.bg_color = Color(0.2, 0.2, 0.2, 0.8)
+	default_style.border_width_left = 2
+	default_style.border_width_top = 2
+	default_style.border_width_right = 2
+	default_style.border_width_bottom = 2
+	default_style.border_color = Color(0.1, 0.1, 0.1, 1)
+	
+	hover_style = StyleBoxFlat.new()
+	hover_style.bg_color = Color(0.3, 0.3, 0.3, 0.8)
+	hover_style.border_width_left = 2
+	hover_style.border_width_top = 2
+	hover_style.border_width_right = 2
+	hover_style.border_width_bottom = 2
+	hover_style.border_color = Color(1, 1, 1, 1)
+	
+	# Set initial style
+	add_theme_stylebox_override("panel", default_style)
+	
+	# Enable mouse input
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	
-	# Make sure child controls don't block input
-	if item_display:
-		item_display.mouse_filter = Control.MOUSE_FILTER_PASS
-		item_display.custom_minimum_size = Vector2(48, 48)  # Make icon bigger
-		
-	if count_label:
-		count_label.mouse_filter = Control.MOUSE_FILTER_PASS
+	# Connect mouse signals
+	mouse_entered.connect(_on_mouse_entered)
+	mouse_exited.connect(_on_mouse_exited)
+
+func _on_mouse_entered() -> void:
+	is_hovered = true
+	add_theme_stylebox_override("panel", hover_style)
+	print("Mouse entered slot")
+
+func _on_mouse_exited() -> void:
+	is_hovered = false
+	add_theme_stylebox_override("panel", default_style)
+	print("Mouse exited slot")
+
+func _gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseMotion and !is_hovered:
+		_on_mouse_entered()
+	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		if event.pressed:
+			print("Clicked slot")
 	
-	print("InventorySlot: Initialized and ready for input")
-	print("InventorySlot: Mouse filter = ", mouse_filter)
-
-func _gui_input(event: InputEvent):
-	if event is InputEventMouseButton:
-		print("InventorySlot: Received mouse button: ", event.as_text())
-		print("InventorySlot: Item data = ", item_data)
-	get_viewport().set_input_as_handled()  # Prevent input from propagating
-
-func get_drag_preview():
-	if !item_data or !item_display:
-		return null
-		
-	var preview = TextureRect.new()
-	preview.texture = item_display.texture
-	preview.custom_minimum_size = Vector2(48, 48)
-	preview.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
-	preview.modulate.a = 0.7  # Make it slightly transparent
-	return preview
+	# Prevent input from propagating
+	get_viewport().set_input_as_handled()

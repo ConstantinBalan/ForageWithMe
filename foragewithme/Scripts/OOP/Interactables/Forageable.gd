@@ -68,10 +68,24 @@ func forage(player: Player) -> void:
 		time_since_foraged = 0.0
 		emit_signal("foraged", forageable_data)
 		if mesh_instance:
-			mesh_instance.visible = false
+			if collision_mask == 1 and forageable_data.collected_mesh:
+				# Use the collected mesh from the resource
+				mesh_instance.mesh = forageable_data.collected_mesh
+				mesh_instance.scale = Vector3(1, 1, 1)  # Reset scale for collected state
+			else:
+				mesh_instance.visible = false
 
 func respawn() -> void:
 	is_available = true
 	if mesh_instance:
 		mesh_instance.visible = true
+		if collision_mask == 1 and forageable_data.collected_mesh:
+			# Restore original mesh and scale
+			mesh_instance.mesh = forageable_data.mesh
+			mesh_instance.scale = forageable_data.scale
 	time_since_foraged = 0.0
+
+func get_hover_text() -> String:
+	if not is_available:
+		return ""  # Return empty string to hide the prompt when not available
+	return hover_label_text if hover_label_text else forageable_data.name if forageable_data else name

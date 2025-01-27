@@ -1,7 +1,11 @@
-[gd_resource type="Resource" script_class="ForageableItem" load_steps=5 format=3 uid="uid://buvrnu278wk7x"]
+[gd_resource type="Resource" script_class="ForageableItem" load_steps=7 format=3 uid="uid://buvrnu278wk7x"]
 
 [ext_resource type="Script" path="res://Scripts/Resources/forageable_item.gd" id="1_0g6hl"]
+[ext_resource type="Material" uid="uid://c0py7ohbod4gf" path="res://Materials/fireflies.material" id="1_mnjgx"]
 [ext_resource type="Texture2D" uid="uid://dqn26g1khgkwo" path="res://Images/pngtree-watercolor-red-winter-berry-christmas-holly-branches-decor-png-image_13372992.png" id="2_kc1p2"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_hbupl"]
+material = ExtResource("1_mnjgx")
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_8ci23"]
 
@@ -13,6 +17,7 @@ name = "Test Berry Bush"
 description = "A test berry bush for interaction testing"
 texture = ExtResource("2_kc1p2")
 mesh = SubResource("SphereMesh_ethhh")
+collected_mesh = SubResource("SphereMesh_hbupl")
 collision_shape = SubResource("SphereShape3D_8ci23")
 scale = Vector3(1, 1, 1)
 has_collision = true
