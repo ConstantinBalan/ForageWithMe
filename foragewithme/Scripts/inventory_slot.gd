@@ -3,7 +3,9 @@ extends Panel
 var item_data = {}
 var default_style: StyleBoxFlat
 var hover_style: StyleBoxFlat
+var drag_style: StyleBoxFlat
 var is_hovered = false
+var is_dragging = false
 var tooltip_label: Label
 
 func _ready():
@@ -26,6 +28,14 @@ func _ready():
 	hover_style.border_width_right = 2
 	hover_style.border_width_bottom = 2
 	hover_style.border_color = Color(1, 1, 1, 1)
+	
+	drag_style = StyleBoxFlat.new()
+	drag_style.bg_color = Color(0.4, 0.4, 0.4, 0.8)
+	drag_style.border_width_left = 2
+	drag_style.border_width_top = 2
+	drag_style.border_width_right = 2
+	drag_style.border_width_bottom = 2
+	drag_style.border_color = Color(1, 0.8, 0, 1)
 	
 	# Set initial style
 	add_theme_stylebox_override("panel", default_style)
@@ -64,33 +74,40 @@ func _ready():
 	tooltip_label.add_theme_stylebox_override("normal", tooltip_style)
 	add_child(tooltip_label)
 
-func _on_mouse_entered() -> void:
-	is_hovered = true
-	add_theme_stylebox_override("panel", hover_style)
-	if item_data and "name" in item_data:
-		tooltip_label.text = item_data.name
-		tooltip_label.visible = true
-		# Position tooltip above the slot
-		tooltip_label.position = Vector2(
-			size.x/2 - tooltip_label.size.x/2,
-			-tooltip_label.size.y - 5
-		)
-
-func _on_mouse_exited() -> void:
-	is_hovered = false
-	add_theme_stylebox_override("panel", default_style)
+func start_drag():
+	is_dragging = true
+	add_theme_stylebox_override("panel", drag_style)
+	if has_node("ItemDisplay"):
+		get_node("ItemDisplay").modulate.a = 0.5
 	tooltip_label.visible = false
 
-func _gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseMotion and !is_hovered:
-		_on_mouse_entered()
-	elif event is InputEventMouseMotion and is_hovered:
-		# Update tooltip position if needed
-		if tooltip_label.visible:
+func end_drag():
+	is_dragging = false
+	add_theme_stylebox_override("panel", default_style)
+	if has_node("ItemDisplay"):
+		get_node("ItemDisplay").modulate.a = 1.0
+
+func _on_mouse_entered() -> void:
+	is_hovered = true
+	if !is_dragging:
+		add_theme_stylebox_override("panel", hover_style)
+		if item_data and "name" in item_data:
+			tooltip_label.text = item_data.name
+			tooltip_label.visible = true
+			# Position tooltip above the slot
 			tooltip_label.position = Vector2(
 				size.x/2 - tooltip_label.size.x/2,
 				-tooltip_label.size.y - 5
 			)
+
+func _on_mouse_exited() -> void:
+	is_hovered = false
+	if !is_dragging:
+		add_theme_stylebox_override("panel", default_style)
+	tooltip_label.visible = false
+
+func _gui_input(_event: InputEvent) -> void:
+	pass
 
 func update_item(new_item_data: Dictionary) -> void:
 	item_data = new_item_data

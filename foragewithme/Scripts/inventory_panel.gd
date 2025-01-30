@@ -7,7 +7,10 @@ signal item_moved(from_index: int, to_index: int)
 
 var inventory_slots = []
 var dragged_slot = null
+var drag_preview = null
+var drag_offset = Vector2()
 var is_open = false
+var hovered_slot = null
 
 func _ready():
 	print("InventoryPanel: Initializing...")
@@ -68,7 +71,7 @@ func _ready():
 	)
 	
 	# Position panel in top left with margin
-	var margin = Vector2(20, 20)  # Margin from screen edges
+	var margin = Vector2(20, 20) # Margin from screen edges
 	panel.anchor_left = 0
 	panel.anchor_top = 0
 	panel.anchor_right = 0
@@ -78,23 +81,73 @@ func _ready():
 	# Position grid inside panel with padding
 	grid_container.position = padding
 
+func _process(_delta):
+	if drag_preview and dragged_slot:
+		drag_preview.global_position = get_viewport().get_mouse_position() - drag_offset
+		
+		# Find slot under mouse
+		var mouse_pos = get_viewport().get_mouse_position()
+		var found_slot = null
+		for slot in inventory_slots:
+			if slot != dragged_slot:
+				var slot_rect = Rect2(slot.global_position, slot.size)
+				if slot_rect.has_point(mouse_pos):
+					found_slot = slot
+					break
+		
+		# Update hover states
+		if found_slot != hovered_slot:
+			if hovered_slot:
+				hovered_slot.add_theme_stylebox_override("panel", hovered_slot.default_style)
+			if found_slot:
+				found_slot.add_theme_stylebox_override("panel", found_slot.hover_style)
+			hovered_slot = found_slot
+
 func _gui_input(_event: InputEvent) -> void:
 	if is_open:
 		get_viewport().set_input_as_handled()
 
+func create_drag_preview(slot):
+	# Create a new TextureRect for the preview
+	drag_preview = TextureRect.new()
+	drag_preview.texture = slot.get_node("ItemDisplay").texture
+	drag_preview.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+	drag_preview.custom_minimum_size = slot.custom_minimum_size
+	drag_preview.size = slot.size
+	drag_preview.modulate.a = 0.7
+	add_child(drag_preview)
+	
+	# Calculate offset so the item centers on the mouse
+	drag_offset = drag_preview.size / 2
+
+func remove_drag_preview():
+	if drag_preview:
+		drag_preview.queue_free()
+		drag_preview = null
+
 func _on_slot_gui_input(event: InputEvent, slot):
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed:
-			print("Slot clicked at index: ", inventory_slots.find(slot))
 			if !slot.item_data.is_empty():
 				dragged_slot = slot
+				create_drag_preview(slot)
+				slot.start_drag()
 		else:
-			if dragged_slot and dragged_slot != slot:
+			if dragged_slot:
 				var from_index = inventory_slots.find(dragged_slot)
-				var to_index = inventory_slots.find(slot)
-				if from_index != -1 and to_index != -1:
+				var to_slot = hovered_slot if hovered_slot else slot
+				var to_index = inventory_slots.find(to_slot)
+				
+				if from_index != -1 and to_index != -1 and from_index != to_index:
 					emit_signal("item_moved", from_index, to_index)
-			dragged_slot = null
+				
+				if hovered_slot:
+					hovered_slot.add_theme_stylebox_override("panel", hovered_slot.default_style)
+					hovered_slot = null
+				
+				dragged_slot.end_drag()
+				dragged_slot = null
+				remove_drag_preview()
 	
 	get_viewport().set_input_as_handled()
 

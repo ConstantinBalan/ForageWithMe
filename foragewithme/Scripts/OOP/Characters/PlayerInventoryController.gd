@@ -28,7 +28,7 @@ func _ready():
 	# Initialize empty inventory slots
 	inventory_data.resize(inventory_size)
 	for i in range(inventory_size):
-		inventory_data[i] = null
+		inventory_data[i] = {}
 
 func _input(event):
 	if event.is_action_pressed("Inventory"):
@@ -73,12 +73,22 @@ func close_inventory():
 	emit_signal("inventory_toggled", false)
 
 func _on_inventory_item_moved(from_index: int, to_index: int) -> void:
-	# Swap items in the inventory data
-	var temp = inventory_data[from_index]
-	inventory_data[from_index] = inventory_data[to_index]
-	inventory_data[to_index] = temp
+	var from_item = inventory_data[from_index]
+	var to_item = inventory_data[to_index]
 	
-	# Update the UI to reflect the changes
+	# If both slots have items and they are the same type
+	if !from_item.is_empty() and !to_item.is_empty() and from_item.name == to_item.name:
+		# Add quantities
+		to_item.quantity += from_item.quantity
+		# Clear the source slot
+		inventory_data[from_index] = {}
+	else:
+		# Regular swap
+		var temp = inventory_data[from_index]
+		inventory_data[from_index] = inventory_data[to_index]
+		inventory_data[to_index] = temp
+	
+	# Update both slots in the UI
 	if inventory_panel:
 		inventory_panel.update_slot(from_index, inventory_data[from_index])
 		inventory_panel.update_slot(to_index, inventory_data[to_index])
@@ -100,7 +110,7 @@ func add_item(item_name: String, item_texture: Texture2D = null) -> bool:
 	if inventory_panel:
 		# Find first empty slot or stack with same item
 		for i in range(inventory_size):
-			if inventory_data[i] == null:
+			if inventory_data[i] == {}:
 				# Empty slot - add new item
 				var item_data = {
 					"name": item_name,
@@ -140,7 +150,7 @@ func remove_item(item_name: String) -> bool:
 			if inventory_data[i] and inventory_data[i].name == item_name:
 				inventory_data[i].quantity -= 1
 				if inventory_data[i].quantity <= 0:
-					inventory_data[i] = null
+					inventory_data[i] = {}
 				inventory_panel.update_slot(i, inventory_data[i])
 				break
 	
