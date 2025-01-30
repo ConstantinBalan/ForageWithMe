@@ -1,14 +1,19 @@
 extends Node
 
-signal inventory_toggled(is_open: bool)
+signal inventory_toggled(is_open: bool) # Used by camera_holder.gd to manage camera state
 
 @onready var inventory_panel = get_tree().get_first_node_in_group("inventory_ui")
 @onready var player = get_tree().get_first_node_in_group("player")
 
 var is_inventory_open = false
-var inventory_data = []  # Will store the actual inventory items
+var inventory: Dictionary = {} # Simple dictionary for item counts
+var inventory_data = [] # Detailed inventory data for UI
+var inventory_size: int = 24 # Default size
+var item_textures: Dictionary = {} # Store item textures
 
 func _ready():
+	add_to_group("inventory_controller")
+	
 	if !inventory_panel:
 		push_error("PlayerInventoryController: No inventory panel found!")
 		return
@@ -17,23 +22,23 @@ func _ready():
 		return
 		
 	# Connect to inventory panel signals
-	inventory_panel.item_moved.connect(_on_inventory_item_moved)
+	if inventory_panel.has_signal("item_moved"):
+		inventory_panel.item_moved.connect(_on_inventory_item_moved)
 	
-	# Initialize empty inventory with 24 slots (example)
-	for i in range(24):
-		inventory_data.append({})
+	# Initialize empty inventory slots
+	inventory_data.resize(inventory_size)
+	for i in range(inventory_size):
+		inventory_data[i] = null
 
 func _input(event):
 	if event.is_action_pressed("Inventory"):
-		toggle_inventory()
+		if is_inventory_open:
+			close_inventory()
+		else:
+			open_inventory()
+			print("Current inventory:", inventory) # Print current inventory
 	elif event.is_action_pressed("ui_cancel") and is_inventory_open:
 		close_inventory()
-
-func toggle_inventory():
-	if is_inventory_open:
-		close_inventory()
-	else:
-		open_inventory()
 
 func open_inventory():
 	if !inventory_panel or !player:
@@ -78,13 +83,65 @@ func _on_inventory_item_moved(from_index: int, to_index: int) -> void:
 		inventory_panel.update_slot(from_index, inventory_data[from_index])
 		inventory_panel.update_slot(to_index, inventory_data[to_index])
 
-# Function to add an item to the inventory
-func add_item(item_data: Dictionary) -> bool:
-	# Find first empty slot
-	for i in range(inventory_data.size()):
-		if inventory_data[i].is_empty():
-			inventory_data[i] = item_data
-			if inventory_panel:
+func add_item(item_name: String, item_texture: Texture2D = null) -> bool:
+	print("Adding item to inventory:", item_name) # Debug print
+	
+	# Store texture if provided
+	if item_texture:
+		item_textures[item_name] = item_texture
+	
+	# Update simple inventory count
+	if item_name in inventory:
+		inventory[item_name] += 1
+	else:
+		inventory[item_name] = 1
+	
+	# Try to add to UI inventory
+	if inventory_panel:
+		# Find first empty slot or stack with same item
+		for i in range(inventory_size):
+			if inventory_data[i] == null:
+				# Empty slot - add new item
+				var item_data = {
+					"name": item_name,
+					"quantity": 1,
+					"texture": item_textures.get(item_name)
+				}
+				inventory_data[i] = item_data
 				inventory_panel.update_slot(i, item_data)
-			return true
-	return false  # Inventory is full
+				return true
+			elif inventory_data[i] and inventory_data[i].name == item_name:
+				# Stack with existing item
+				inventory_data[i].quantity += 1
+				inventory_panel.update_slot(i, inventory_data[i])
+				return true
+	
+	return true # Always return true for simple inventory
+
+func get_inventory() -> Dictionary:
+	return inventory
+
+func has_item(item_name: String) -> bool:
+	return item_name in inventory and inventory[item_name] > 0
+
+func remove_item(item_name: String) -> bool:
+	if not has_item(item_name):
+		return false
+	
+	# Update simple inventory
+	inventory[item_name] -= 1
+	if inventory[item_name] <= 0:
+		inventory.erase(item_name)
+		item_textures.erase(item_name) # Clean up texture
+	
+	# Update UI inventory
+	if inventory_panel:
+		for i in range(inventory_size):
+			if inventory_data[i] and inventory_data[i].name == item_name:
+				inventory_data[i].quantity -= 1
+				if inventory_data[i].quantity <= 0:
+					inventory_data[i] = null
+				inventory_panel.update_slot(i, inventory_data[i])
+				break
+	
+	return true

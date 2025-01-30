@@ -4,6 +4,7 @@ class_name Player
 @onready var camera_holder = $CameraHolder
 @onready var camera = $CameraHolder/Camera3D
 @onready var interaction_ray = %InteractionRay
+@onready var inventory_controller = get_tree().get_first_node_in_group("inventory_controller")
 
 const FOV_NORMAL = 75.0
 const FOV_SPRINT = 85.0
@@ -115,3 +116,18 @@ func _input(event):
 	# Handle interaction input
 	if event.is_action_pressed("Interact") and current_interactable:
 		current_interactable.interact_with(self)
+
+func add_item(item_id: String, amount: int = 1) -> bool:
+	if inventory_controller:
+		return inventory_controller.add_item(item_id)
+	return super.add_item(item_id, amount)
+
+func add_item_with_texture(item_id: String, texture: Texture2D) -> bool:
+	if inventory_controller:
+		return inventory_controller.add_item(item_id, texture)
+	return super.add_item(item_id, 1)
+
+func get_inventory() -> Dictionary:
+	if inventory_controller:
+		return inventory_controller.get_inventory()
+	return inventory

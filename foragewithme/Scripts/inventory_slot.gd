@@ -4,6 +4,7 @@ var item_data = {}
 var default_style: StyleBoxFlat
 var hover_style: StyleBoxFlat
 var is_hovered = false
+var tooltip_label: Label
 
 func _ready():
 	# Set minimum size for the slot
@@ -36,23 +37,90 @@ func _ready():
 	# Connect mouse signals
 	mouse_entered.connect(_on_mouse_entered)
 	mouse_exited.connect(_on_mouse_exited)
+	
+	# Create tooltip label
+	tooltip_label = Label.new()
+	tooltip_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	tooltip_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	tooltip_label.visible = false
+	
+	# Style the tooltip
+	var tooltip_style = StyleBoxFlat.new()
+	tooltip_style.bg_color = Color(0.1, 0.1, 0.1, 0.9)
+	tooltip_style.border_width_left = 1
+	tooltip_style.border_width_top = 1
+	tooltip_style.border_width_right = 1
+	tooltip_style.border_width_bottom = 1
+	tooltip_style.border_color = Color(1, 1, 1, 0.5)
+	tooltip_style.corner_radius_top_left = 4
+	tooltip_style.corner_radius_top_right = 4
+	tooltip_style.corner_radius_bottom_left = 4
+	tooltip_style.corner_radius_bottom_right = 4
+	tooltip_style.content_margin_left = 8
+	tooltip_style.content_margin_right = 8
+	tooltip_style.content_margin_top = 4
+	tooltip_style.content_margin_bottom = 4
+	
+	tooltip_label.add_theme_stylebox_override("normal", tooltip_style)
+	add_child(tooltip_label)
 
 func _on_mouse_entered() -> void:
 	is_hovered = true
 	add_theme_stylebox_override("panel", hover_style)
-	print("Mouse entered slot")
+	if item_data and "name" in item_data:
+		tooltip_label.text = item_data.name
+		tooltip_label.visible = true
+		# Position tooltip above the slot
+		tooltip_label.position = Vector2(
+			size.x/2 - tooltip_label.size.x/2,
+			-tooltip_label.size.y - 5
+		)
 
 func _on_mouse_exited() -> void:
 	is_hovered = false
 	add_theme_stylebox_override("panel", default_style)
-	print("Mouse exited slot")
+	tooltip_label.visible = false
 
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and !is_hovered:
 		_on_mouse_entered()
-	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
-		if event.pressed:
-			print("Clicked slot")
+	elif event is InputEventMouseMotion and is_hovered:
+		# Update tooltip position if needed
+		if tooltip_label.visible:
+			tooltip_label.position = Vector2(
+				size.x/2 - tooltip_label.size.x/2,
+				-tooltip_label.size.y - 5
+			)
+
+func update_item(new_item_data: Dictionary) -> void:
+	item_data = new_item_data
+	queue_redraw()
 	
-	# Prevent input from propagating
-	get_viewport().set_input_as_handled()
+	# Hide tooltip if item is removed
+	if item_data.is_empty():
+		tooltip_label.visible = false
+
+func _draw() -> void:
+	if item_data.is_empty():
+		return
+		
+	if "texture" in item_data and item_data.texture:
+		var texture = item_data.texture
+		var scale = min(size.x / texture.get_width(), size.y / texture.get_height())
+		var draw_size = Vector2(texture.get_width() * scale, texture.get_height() * scale)
+		var position = Vector2(
+			(size.x - draw_size.x) / 2,
+			(size.y - draw_size.y) / 2
+		)
+		draw_texture_rect(texture, Rect2(position, draw_size), false)
+		
+	if "quantity" in item_data and item_data.quantity > 1:
+		var font = ThemeDB.fallback_font
+		var font_size = 16
+		var text = str(item_data.quantity)
+		var text_size = font.get_string_size(text, HORIZONTAL_ALIGNMENT_RIGHT, -1, font_size)
+		var position = Vector2(
+			size.x - text_size.x - 5,
+			size.y - 5
+		)
+		draw_string(font, position, text, HORIZONTAL_ALIGNMENT_RIGHT, -1, font_size, Color.WHITE)

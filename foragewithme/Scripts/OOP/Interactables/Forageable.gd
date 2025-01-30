@@ -10,6 +10,7 @@ var is_available: bool = true
 var time_since_foraged: float = 0.0
 var mesh_instance: MeshInstance3D
 var collision_shape: CollisionShape3D
+var minigame_active: bool = false
 
 func _ready():
 	super._ready()
@@ -26,6 +27,14 @@ func _ready():
 	if forageable_data:
 		setup_mesh()
 		setup_collision()
+	
+	# Connect to ForagingMinigameManager signals
+	ForagingMiniGameManager.connect("foraging_completed", _on_foraging_completed)
+
+func _exit_tree() -> void:
+	# Disconnect from ForagingMinigameManager signals
+	if ForagingMiniGameManager.is_connected("foraging_completed", _on_foraging_completed):
+		ForagingMiniGameManager.disconnect("foraging_completed", _on_foraging_completed)
 
 func setup_mesh() -> void:
 	# Create or get existing mesh instance
@@ -57,23 +66,42 @@ func _process(delta: float) -> void:
 			respawn()
 
 func interact_with(interactor: Node3D) -> void:
-	if not is_available or not interactor is Player or not forageable_data:
+	if not is_available or minigame_active or not interactor is Player or not forageable_data:
 		return
 		
+	minigame_active = true
 	forage(interactor as Player)
 
 func forage(player: Player) -> void:
-	if player.add_item(forageable_data.name):
-		is_available = false
-		time_since_foraged = 0.0
-		emit_signal("foraged", forageable_data)
-		if mesh_instance:
-			if collision_mask == 1 and forageable_data.collected_mesh:
-				# Use the collected mesh from the resource
-				mesh_instance.mesh = forageable_data.collected_mesh
-				mesh_instance.scale = Vector3(1, 1, 1)  # Reset scale for collected state
-			else:
-				mesh_instance.visible = false
+	# Create item data for the mini-game
+	var item_data = {
+		"name": forageable_data.name,
+		"description": forageable_data.description,
+		"quantity": 1,
+		"texture": forageable_data.texture
+	}
+	
+	# Start the foraging mini-game
+	ForagingMiniGameManager.start_foraging(item_data)
+
+func _on_foraging_completed(success: bool, item_data: Dictionary) -> void:
+	minigame_active = false
+	
+	if success and item_data.name == forageable_data.name:
+		var player = get_tree().get_first_node_in_group("player")
+		if player and player.has_method("add_item"):
+			if player.add_item_with_texture(forageable_data.name, forageable_data.texture):
+				is_available = false
+				time_since_foraged = 0.0
+				emit_signal("foraged", forageable_data)
+				if mesh_instance:
+					if collision_mask == 1 and forageable_data.collected_mesh:
+						# Use the collected mesh from the resource
+						mesh_instance.mesh = forageable_data.collected_mesh
+						mesh_instance.scale = Vector3(1, 1, 1)  # Reset scale for collected state
+					else:
+						# Just hide the mesh if no collected state
+						mesh_instance.visible = false
 
 func respawn() -> void:
 	is_available = true
@@ -86,6 +114,6 @@ func respawn() -> void:
 	time_since_foraged = 0.0
 
 func get_hover_text() -> String:
-	if not is_available:
+	if not is_available or minigame_active:
 		return ""  # Return empty string to hide the prompt when not available
 	return hover_label_text if hover_label_text else forageable_data.name if forageable_data else name

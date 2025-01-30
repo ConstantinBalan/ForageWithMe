@@ -23,6 +23,8 @@ buses/default_bus_layout="res://Audio/default_bus_layout.tres"
 PlayerDataManager="*res://Scripts/Autoloaded Scripts/player_data_manager.gd"
 GameManager="*res://Scripts/Autoloaded Scripts/game_manager.gd"
 WorldManager="*res://Scripts/Autoloaded Scripts/world_manager.gd"
+ForagingMiniGameManager="*res://Scripts/OOP/Foraging/foraging_manager.gd"
+MiniGameTutorialManager="*res://Scripts/OOP/Tutorial/tutorial_manager.gd"
 
 [display]
 

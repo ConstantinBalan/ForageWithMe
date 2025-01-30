@@ -13,7 +13,7 @@ material = ExtResource("1_mnjgx")
 
 [resource]
 script = ExtResource("1_0g6hl")
-name = "Test Berry Bush"
+name = "Wild Berries"
 description = "A test berry bush for interaction testing"
 texture = ExtResource("2_kc1p2")
 mesh = SubResource("SphereMesh_ethhh")

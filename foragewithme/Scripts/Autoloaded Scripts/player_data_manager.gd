@@ -7,7 +7,14 @@ var player_data = {
 		"inventory": [],
 		"recipes": [],
 		"unlocked_tools": [],
-		"relationships": {}
+		"relationships": {},
+		"foraging_proficiency": {
+			"berries": 0.0,
+			"mushrooms": 0.0,
+			"herbs": 0.0,
+			"wood": 0.0
+		},
+		"completed_tutorials": {}
 	},
 	"villagers": {},
 	"cabin": {},
@@ -60,3 +67,20 @@ func load_game_data():
 		file.close()
 	else:
 		printerr("No existing save data found at %s" % SAVE_PATH)
+
+func update_foraging_proficiency(category: String, success_score: float) -> void:
+	var current_prof = player_data["player"]["foraging_proficiency"].get(category, 0.0)
+	# Increase proficiency more on success, decrease slightly on failure
+	var delta = success_score * 0.1 if success_score > 0 else -0.05
+	player_data["player"]["foraging_proficiency"][category] = clamp(current_prof + delta, 0.0, 1.0)
+	save_game_data()
+
+func get_foraging_proficiency(category: String) -> float:
+	return player_data["player"]["foraging_proficiency"].get(category, 0.0)
+
+func get_completed_tutorials() -> Dictionary:
+	return player_data["player"]["completed_tutorials"]
+
+func save_tutorial_completion(tutorial_id: String) -> void:
+	player_data["player"]["completed_tutorials"][tutorial_id] = true
+	save_game_data()
