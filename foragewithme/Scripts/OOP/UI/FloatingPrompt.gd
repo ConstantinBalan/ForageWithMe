@@ -9,7 +9,8 @@ var offset: Vector3 = Vector3(0, 2, 0)
 var is_visible: bool = false
 
 func _ready():
-	hide()
+	# Instead of hide(), set initial alpha to 0
+	label_3d.modulate.a = 0
 
 func _process(_delta):
 	if is_visible and is_instance_valid(target):
@@ -24,15 +25,15 @@ func show_prompt(text: String, target_node: Node3D, duration: float = 2.0) -> vo
 	target = target_node
 	label_3d.text = text
 	is_visible = true
-	show()
+	
+	# Don't call show() since we're using modulate alpha
+	animation_player.play("floating_prompt_animations/fade_in")
 	
 	if duration > 0:
-		animation_player.play("fade_in")
 		await get_tree().create_timer(duration).timeout
 		hide_prompt()
 
 func hide_prompt() -> void:
-	animation_player.play("fade_out")
+	animation_player.play("floating_prompt_animations/fade_out")
 	await animation_player.animation_finished
 	is_visible = false
-	hide()

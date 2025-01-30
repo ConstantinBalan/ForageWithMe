@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Scripts/OOP/Characters/Player.gd" id="1_player"]
 [ext_resource type="Script" path="res://Scripts/camera_holder.gd" id="2_camera"]
-[ext_resource type="Script" path="res://Scripts/PlayerInventoryController.gd" id="3_ni677"]
+[ext_resource type="Script" path="res://Scripts/OOP/Characters/PlayerInventoryController.gd" id="3_gg48m"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_player"]
 radius = 0.3
@@ -44,4 +44,4 @@ debug_shape_custom_color = Color(0, 0, 1, 1)
 debug_shape_thickness = 1
 
 [node name="Inventory" type="Node" parent="." groups=["player"]]
-script = ExtResource("3_ni677")
+script = ExtResource("3_gg48m")
