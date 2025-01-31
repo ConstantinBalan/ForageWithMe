@@ -1,9 +1,9 @@
 extends ForagingMinigameBase
 class_name QTEMinigame
 
-@onready var prompt_container = $PromptContainer
-@onready var success_particles = $SuccessParticles
-@onready var progress_bar = $ProgressBar
+@onready var prompt_container = $Background/PromptContainer
+@onready var success_particles = $Background/SuccessParticles
+@onready var progress_bar = $Background/ProgressBar
 
 const BUTTON_PROMPTS = ["E", "F", "Space"]
 var current_prompt: String
@@ -45,9 +45,9 @@ func _input(event: InputEvent) -> void:
 		return
 	
 	var pressed_key = ""
-	if event.is_action_pressed("interact"): pressed_key = "E"
-	elif event.is_action_pressed("secondary_interact"): pressed_key = "F"
-	elif event.is_action_pressed("jump"): pressed_key = "Space"
+	if event.is_action_pressed("Interact"): pressed_key = "E"
+	elif event.is_action_pressed("Secondary_Interact"): pressed_key = "F"
+	elif event.is_action_pressed("Jump"): pressed_key = "Space"
 	
 	if pressed_key != "":
 		if pressed_key == current_prompt:

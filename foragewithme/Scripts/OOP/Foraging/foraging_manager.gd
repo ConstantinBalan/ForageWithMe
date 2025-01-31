@@ -9,7 +9,7 @@ const MINIGAME_SCENES = {
 
 # Map item types to their preferred mini-game types and proficiency categories
 const ITEM_CONFIGS = {
-	"Wild Berries": {"minigame": "timing", "category": "berries"},
+	"Wild Berries": {"minigame": "qte", "category": "berries"},
 	"Mushrooms": {"minigame": "pattern", "category": "mushrooms"},
 	"Oak Log": {"minigame": "qte", "category": "wood"}
 }
