@@ -36,7 +36,7 @@ func start_foraging(item_data: Dictionary) -> void:
 		return
 		
 	active_item = item_data
-	
+	print(active_item)
 	# Get item configuration
 	var item_config = ITEM_CONFIGS.get(item_data.name, {"minigame": "timing", "category": "general"})
 	var minigame_type = item_config.minigame
@@ -47,6 +47,7 @@ func start_foraging(item_data: Dictionary) -> void:
 		# Wait for tutorial completion before starting minigame
 		await tutorial_manager.tutorial_completed
 	
+	# Start minigame only once, after tutorial if needed
 	_start_minigame(item_config)
 
 func _start_minigame(item_config: Dictionary) -> void:
@@ -72,6 +73,7 @@ func _start_minigame(item_config: Dictionary) -> void:
 	current_minigame.connect("minigame_completed", _on_minigame_completed.bind(proficiency_category))
 	
 	# Start the minigame
+	print("ForagingManager starting minigame")
 	current_minigame.start_minigame()
 
 func try_skip_minigame() -> bool:
@@ -81,9 +83,8 @@ func try_skip_minigame() -> bool:
 	return false
 
 func _on_tutorial_completed(_tutorial_id: String) -> void:
-	if active_item:
-		var item_config = ITEM_CONFIGS.get(active_item.name, {"minigame": "timing", "category": "general"})
-		_start_minigame(item_config)
+	# Remove this since we now start the minigame after tutorial in start_foraging
+	pass
 
 func _on_minigame_completed(success: bool, score: float, proficiency_category: String) -> void:
 	# Store item data before cleanup
@@ -92,11 +93,11 @@ func _on_minigame_completed(success: bool, score: float, proficiency_category: S
 	# Update player proficiency
 	PlayerDataManager.update_foraging_proficiency(proficiency_category, score if success else -0.1)
 	
+	# Emit signal with the stored item data
+	emit_signal("foraging_completed", success, item_data)
+	
 	# Clean up
 	if current_minigame:
 		current_minigame.queue_free()
 	current_minigame = null
 	active_item = {}
-	
-	# Emit signal with the stored item data
-	emit_signal("foraging_completed", success, item_data)

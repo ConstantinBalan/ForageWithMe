@@ -37,6 +37,10 @@ func _ready():
 	interaction_ray.debug_shape_thickness = 2
 
 func _physics_process(delta):
+	# Lock player rotation to initial rotation during orbit mode
+	if camera_holder.is_orbiting:
+		rotation.y = camera_holder.initial_player_rotation
+		
 	handle_movement_intent(delta)
 	handle_fov(delta)
 	update_interaction_ray()
@@ -62,7 +66,15 @@ func handle_movement_intent(delta):
 	
 	# Get input direction and transform it relative to the player's rotation
 	var input_dir = Input.get_vector("Move Backward", "Move Forward", "Move Left", "Move Right")
-	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+	var direction = Vector3.ZERO
+	
+	# Only use camera basis for movement when not in orbit mode
+	if !camera_holder.is_orbiting:
+		direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+	else:
+		# During orbit, use the stored initial rotation for movement
+		var basis = Transform3D(Basis.from_euler(Vector3(0, camera_holder.initial_player_rotation, 0)))
+		direction = (basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	
 	# Apply movement
 	if direction:

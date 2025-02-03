@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://b6r8j0q7n6xkw"]
+[gd_scene load_steps=5 format=3 uid="uid://b6r8j0q7n6xkw"]
 
 [ext_resource type="Script" path="res://Scripts/OOP/Foraging/timing_minigame.gd" id="1_w4j3m"]
 
@@ -15,6 +15,17 @@ corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_fglrc"]
+particle_flag_disable_z = true
+direction = Vector3(0, -1, 0)
+spread = 30.0
+initial_velocity_min = 50.0
+initial_velocity_max = 100.0
+gravity = Vector3(0, 98, 0)
+scale_min = 2.0
+scale_max = 4.0
+color = Color(1, 1, 0, 1)
 
 [node name="TimingMinigame" type="Control"]
 layout_mode = 3
@@ -95,3 +106,10 @@ anchor_bottom = 0.5
 offset_top = -20.0
 offset_bottom = 20.0
 grow_vertical = 2
+
+[node name="SuccessParticles" type="GPUParticles2D" parent="PanelContainer/CenterContainer/VBoxContainer/ProgressBar"]
+emitting = false
+amount = 32
+process_material = SubResource("ParticleProcessMaterial_fglrc")
+one_shot = true
+explosiveness = 0.8

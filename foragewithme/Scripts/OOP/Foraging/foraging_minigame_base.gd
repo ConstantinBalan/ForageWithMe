@@ -5,21 +5,24 @@ signal minigame_completed(success: bool, score: float)
 signal minigame_started
 
 # Difficulty ranges from 0 (easiest) to 1 (hardest)
-var difficulty: float = 0.5
+var difficulty: float = 0.0
 var player_proficiency: float = 0.0
 var item_data: Dictionary
 
 func initialize(item: Dictionary, player_prof: float) -> void:
 	item_data = item
 	player_proficiency = player_prof
+	print("Minigame base init: " + str(item_data))
 	# Adjust difficulty based on player proficiency
-	difficulty = max(0.1, 0.5 - (player_proficiency * 0.1))
+	difficulty = max(0.1, 1.0 - (player_proficiency * 0.1))
 
 func start_minigame() -> void:
+	print("Base class start_minigame called")
 	emit_signal("minigame_started")
 	_setup_minigame()
 
 func _setup_minigame() -> void:
+	print("Base class _setup_minigame called")
 	# Override in child classes to set up specific mini-game logic
 	pass
 

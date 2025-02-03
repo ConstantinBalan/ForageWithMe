@@ -4,8 +4,8 @@ extends SpringArm3D
 @onready var inventory_controller = get_tree().get_first_node_in_group("inventory_controller")
 
 # Camera constraints for vertical rotation
-const VERTICAL_LOW = deg_to_rad(-45)   # Maximum look-up angle
-const VERTICAL_HIGH = deg_to_rad(60)   # Maximum look-down angle
+const VERTICAL_LOW = deg_to_rad(-45) # Maximum look-up angle
+const VERTICAL_HIGH = deg_to_rad(60) # Maximum look-down angle
 const MOUSE_SENSITIVITY = 0.04
 
 # Camera states
@@ -13,6 +13,7 @@ var is_orbiting: bool = false
 var is_transitioning: bool = false
 var vertical_rotation: float = 0.0
 var camera_enabled: bool = true  # New flag to control camera movement
+var initial_player_rotation: float = 0.0  # Store player's initial rotation when orbiting
 
 # Transition state
 var transition_weight: float = 0.0
@@ -22,7 +23,7 @@ var target_y_rotation: float = 0.0
 # Spring arm configuration
 const ARM_HEIGHT = 1.0
 const ARM_LENGTH = 4.0
-const INITIAL_Y_ROTATION = deg_to_rad(-90)  # Camera starts behind player (-90 degrees)
+const INITIAL_Y_ROTATION = deg_to_rad(-90) # Camera starts behind player (-90 degrees)
 
 # Transition settings
 const TRANSITION_DURATION = 0.5
@@ -94,23 +95,29 @@ func handle_mouse_motion(event: InputEventMouseMotion) -> void:
 func start_orbit() -> void:
 	is_orbiting = true
 	is_transitioning = false
+	# Store the player's current rotation when starting orbit
+	var player = get_tree().get_first_node_in_group("player")
+	if player:
+		initial_player_rotation = player.rotation.y
 
 func end_orbit() -> void:
 	if !is_orbiting:
 		return
+	is_orbiting = false
+	
+	# Reset player rotation to initial state when ending orbit
+	var player = get_tree().get_first_node_in_group("player")
+	if player:
+		player.rotation.y = initial_player_rotation
 	
 	# Store our current transform
 	start_transform = transform
 	
-	# Calculate shortest path back to home position
-	var current_y = normalize_angle(rotation.y)
-	var target_y = normalize_angle(INITIAL_Y_ROTATION)
-	var delta = normalize_angle(target_y - current_y)
-	target_y_rotation = current_y + delta
+	# Calculate target rotation
+	target_y_rotation = INITIAL_Y_ROTATION
 	
 	# Start transition
 	is_transitioning = true
-	is_orbiting = false
 	transition_weight = 0.0
 	
 	var tween = create_tween()
