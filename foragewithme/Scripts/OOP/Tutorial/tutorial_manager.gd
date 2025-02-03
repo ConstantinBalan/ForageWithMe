@@ -44,10 +44,16 @@ func show_tutorial(tutorial_id: String, parent_node: Node) -> void:
 	# Clean up any existing tutorial
 	if current_tutorial and is_instance_valid(current_tutorial):
 		current_tutorial.queue_free()
+	
+	# Find the UI layer
+	var ui_layer = get_tree().get_first_node_in_group("ui_layer")
+	if not ui_layer:
+		push_error("No UI layer found in scene!")
+		return
 		
 	var tutorial_scene = load("res://Scenes/Tutorial/minigame_tutorial.tscn")
 	var tutorial = tutorial_scene.instantiate()
-	parent_node.add_child(tutorial)
+	ui_layer.add_child(tutorial)
 	current_tutorial = tutorial
 	
 	tutorial.initialize(TUTORIAL_DATA[tutorial_id])
@@ -67,9 +73,15 @@ func is_tutorial_completed(tutorial_id: String) -> bool:
 
 # Optional: Force show a tutorial even if completed (for testing or player request)
 func force_show_tutorial(tutorial_id: String, parent_node: Node) -> void:
+	# Find the UI layer
+	var ui_layer = get_tree().get_first_node_in_group("ui_layer")
+	if not ui_layer:
+		push_error("No UI layer found in scene!")
+		return
+		
 	var tutorial_scene = load("res://Scenes/Tutorial/minigame_tutorial.tscn")
 	var tutorial = tutorial_scene.instantiate()
-	parent_node.add_child(tutorial)
+	ui_layer.add_child(tutorial)
 	current_tutorial = tutorial
 	
 	tutorial.initialize(TUTORIAL_DATA[tutorial_id])

@@ -9,7 +9,7 @@ const MINIGAME_SCENES = {
 
 # Map item types to their preferred mini-game types and proficiency categories
 const ITEM_CONFIGS = {
-	"Wild Berries": {"minigame": "qte", "category": "berries"},
+	"Wild Berries": {"minigame": "timing", "category": "berries"},
 	"Mushrooms": {"minigame": "pattern", "category": "mushrooms"},
 	"Oak Log": {"minigame": "qte", "category": "wood"}
 }
@@ -20,7 +20,7 @@ var current_minigame: ForagingMinigameBase
 var active_item: Dictionary
 
 # The tutorial manager will be set by the autoload system
-@onready var tutorial_manager = get_node("/root/MinigameTutorialManager") if has_node("/root/MinigameTutorialManager") else null
+@onready var tutorial_manager = get_node("/root/MiniGameTutorialManager") if has_node("/root/MiniGameTutorialManager") else null
 
 func _ready() -> void:
 	if tutorial_manager:
@@ -86,13 +86,17 @@ func _on_tutorial_completed(_tutorial_id: String) -> void:
 		_start_minigame(item_config)
 
 func _on_minigame_completed(success: bool, score: float, proficiency_category: String) -> void:
+	# Store item data before cleanup
+	var item_data = active_item.duplicate()
+	
 	# Update player proficiency
 	PlayerDataManager.update_foraging_proficiency(proficiency_category, score if success else -0.1)
-	
-	emit_signal("foraging_completed", success, active_item)
 	
 	# Clean up
 	if current_minigame:
 		current_minigame.queue_free()
 	current_minigame = null
 	active_item = {}
+	
+	# Emit signal with the stored item data
+	emit_signal("foraging_completed", success, item_data)

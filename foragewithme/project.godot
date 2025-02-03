@@ -46,6 +46,7 @@ player="The group assigned to the player and player related objects"
 interactable="Interactable objects in the world"
 villager=""
 inventory_ui=""
+ui_layer=""
 
 [input]
 
