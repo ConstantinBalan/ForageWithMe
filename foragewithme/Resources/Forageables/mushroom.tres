@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="ForageableItem" load_steps=4 format=3 uid="uid://dy37imtkrpirp"]
 
-[ext_resource type="Script" path="res://Scripts/Resources/forageable_item.gd" id="1_u4r3f"]
+[ext_resource type="Script" uid="uid://bpvd13e5e6b7s" path="res://Scripts/Resources/forageable_item.gd" id="1_u4r3f"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1"]
 radius = 0.2

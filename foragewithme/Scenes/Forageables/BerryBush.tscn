@@ -1,9 +1,15 @@
 [gd_scene load_steps=7 format=3 uid="uid://dghjyi4wyxwpv"]
 
-[ext_resource type="Script" path="res://Scripts/ECS/Component Scripts/ForageableComponent.gd" id="1_ip5x8"]
 [ext_resource type="Resource" uid="uid://0wf683vikogh" path="res://Resources/Forageables/Winterberry.tres" id="2_cx7xw"]
-[ext_resource type="Script" path="res://Scripts/ECS/Component Scripts/InteractableComponent.gd" id="2_dqsb3"]
-[ext_resource type="Script" path="res://Scripts/ECS/Component Scripts/FloatingPromptComponent.gd" id="2_ohox1"]
+
+[sub_resource type="Resource" id="Resource_jlnuf"]
+metadata/__load_path__ = "res://Scripts/ECS/Component Scripts/ForageableComponent.gd"
+
+[sub_resource type="Resource" id="Resource_ex8v5"]
+metadata/__load_path__ = "res://Scripts/ECS/Component Scripts/InteractableComponent.gd"
+
+[sub_resource type="Resource" id="Resource_utrfh"]
+metadata/__load_path__ = "res://Scripts/ECS/Component Scripts/FloatingPromptComponent.gd"
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_7g6g1"]
 
@@ -13,15 +19,15 @@
 collision_layer = 3
 
 [node name="ForageableComponent" type="Node" parent="." node_paths=PackedStringArray("mesh_instance")]
-script = ExtResource("1_ip5x8")
+script = SubResource("Resource_jlnuf")
 forageable_item = ExtResource("2_cx7xw")
 mesh_instance = NodePath("../MeshInstance3D")
 
 [node name="InteractableComponent" type="Node" parent="."]
-script = ExtResource("2_dqsb3")
+script = SubResource("Resource_ex8v5")
 
 [node name="FloatingPromptComponent" type="Node3D" parent="InteractableComponent"]
-script = ExtResource("2_ohox1")
+script = SubResource("Resource_utrfh")
 prompt_offset = Vector3(0, 1.2, 0)
 
 [node name="Label3D" type="Label3D" parent="InteractableComponent/FloatingPromptComponent"]

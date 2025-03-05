@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="VillagerData" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="VillagerData" load_steps=3 format=3 uid="uid://d3itilwiax3bx"]
 
-[ext_resource type="Script" path="res://Scripts/Resources/villager_data.gd" id="1_v5r3f"]
+[ext_resource type="Script" uid="uid://mratwp44xlmp" path="res://Scripts/Resources/villager_data.gd" id="1_v5r3f"]
+
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_1"]
 
 [resource]
@@ -23,6 +24,6 @@ locations = {
 "leisure": Vector3(0, 0, 5),
 "work": Vector3(-10, 0, -10)
 }
-traits = ["friendly", "hardworking", "early_riser"]
-liked_items = ["mushroom", "berry", "fish"]
-disliked_items = ["trash", "rotten_food"]
+traits = Array[String](["friendly", "hardworking", "early_riser"])
+liked_items = Array[String](["mushroom", "berry", "fish"])
+disliked_items = Array[String](["trash", "rotten_food"])

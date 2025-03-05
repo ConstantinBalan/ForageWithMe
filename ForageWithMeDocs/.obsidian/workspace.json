@@ -1,0 +1,193 @@
+{
+  "main": {
+    "id": "88678fa3fa07e44e",
+    "type": "split",
+    "children": [
+      {
+        "id": "8caad53647de15e7",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "88657194a0ca3395",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "15_Getting_Started_Guide.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "15_Getting_Started_Guide"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "3abca46937a51c77",
+    "type": "split",
+    "children": [
+      {
+        "id": "9cdb20561676a5a1",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "75680b686e7a3a4e",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "3013bb4160058745",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "62400968bde8dc07",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 343.50418853759766
+  },
+  "right": {
+    "id": "a24c2c2226ae635c",
+    "type": "split",
+    "children": [
+      {
+        "id": "0ce4ac38a9b128e5",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b02199c12894fb89",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Scripts_Structure.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for Scripts_Structure"
+            }
+          },
+          {
+            "id": "e657eccfc9e4b3b7",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Scripts_Structure.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from Scripts_Structure"
+            }
+          },
+          {
+            "id": "6ee71b2229236619",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "6b78cf7ff161a0fa",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Scripts_Structure.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of Scripts_Structure"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "88657194a0ca3395",
+  "lastOpenFiles": [
+    "01_Game_Design_Document.md",
+    "16_Project_Overview_For_Beginners.md",
+    "15_Getting_Started_Guide.md",
+    "14_Resource_Relationships.md",
+    "13_Development_Workflow.md",
+    "12_Signal_System_Overview.md",
+    "11_Script_Documentation.md",
+    "10_ForageWithMe_Technical_Overview.md",
+    "Scripts_Signal_Flow.md",
+    "09_Steam_Release_Checklist.md",
+    "Welcome.md",
+    "Scripts_Structure.md",
+    "07_Development_Guidelines.md",
+    "08_Marketing_Plan.md",
+    "06_Asset_List.md",
+    "05_Milestone_Schedule.md",
+    "04_Project_Management_Plan.md",
+    "03_Technical_Design_Document.md",
+    "02_Art_Style_Guide.md"
+  ]
+}

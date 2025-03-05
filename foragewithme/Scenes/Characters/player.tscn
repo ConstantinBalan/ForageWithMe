@@ -1,8 +1,8 @@
 [gd_scene load_steps=6 format=3 uid="uid://dwb5dtnmdeslb"]
 
-[ext_resource type="Script" path="res://Scripts/OOP/Characters/Player.gd" id="1_player"]
-[ext_resource type="Script" path="res://Scripts/camera_holder.gd" id="2_camera"]
-[ext_resource type="Script" path="res://Scripts/OOP/Characters/PlayerInventoryController.gd" id="3_gg48m"]
+[ext_resource type="Script" uid="uid://iq7dekmmnhg7" path="res://Scripts/Characters/Player.gd" id="1_player"]
+[ext_resource type="Script" uid="uid://dl20vj8i68rhk" path="res://Scripts/Characters/camera_holder.gd" id="2_camera"]
+[ext_resource type="Script" uid="uid://cpxvhtcq0v2x" path="res://Scripts/Characters/PlayerInventoryController.gd" id="3_gg48m"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_player"]
 radius = 0.3

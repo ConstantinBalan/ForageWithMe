@@ -13,8 +13,7 @@ var player_data = {
 			"mushrooms": 0.0,
 			"herbs": 0.0,
 			"wood": 0.0
-		},
-		"completed_tutorials": {}
+		}
 	},
 	"villagers": {},
 	"cabin": {},
@@ -77,10 +76,3 @@ func update_foraging_proficiency(category: String, success_score: float) -> void
 
 func get_foraging_proficiency(category: String) -> float:
 	return player_data["player"]["foraging_proficiency"].get(category, 0.0)
-
-func get_completed_tutorials() -> Dictionary:
-	return player_data["player"]["completed_tutorials"]
-
-func save_tutorial_completion(tutorial_id: String) -> void:
-	player_data["player"]["completed_tutorials"][tutorial_id] = true
-	save_game_data()

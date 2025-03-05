@@ -12,18 +12,18 @@ config_version=5
 
 config/name="ForageWithMe"
 run/main_scene="res://Scenes/Zones/forest_area.tscn"
-config/features=PackedStringArray("4.3", "Forward Plus")
+config/features=PackedStringArray("4.4", "Forward Plus")
 
 [audio]
 
-buses/default_bus_layout="res://Audio/default_bus_layout.tres"
+buses/default_bus_layout="res://Assets/Audio/default_bus_layout.tres"
 
 [autoload]
 
 PlayerDataManager="*res://Scripts/Autoloaded Scripts/player_data_manager.gd"
 GameManager="*res://Scripts/Autoloaded Scripts/game_manager.gd"
 WorldManager="*res://Scripts/Autoloaded Scripts/world_manager.gd"
-ForagingMiniGameManager="*res://Scripts/OOP/Foraging/foraging_manager.gd"
+ForagingMiniGameManager="*res://Scripts/Foraging/foraging_manager.gd"
 MiniGameTutorialManager="*res://Scripts/OOP/Tutorial/tutorial_manager.gd"
 
 [display]
