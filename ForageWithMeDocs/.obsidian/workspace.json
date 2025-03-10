@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "15_Getting_Started_Guide.md",
+                "file": "ProjectVisualization.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "15_Getting_Started_Guide"
+              "title": "ProjectVisualization"
             }
           }
         ]
@@ -78,7 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 343.50418853759766
+    "width": 200
   },
   "right": {
     "id": "a24c2c2226ae635c",
@@ -170,22 +170,24 @@
   },
   "active": "88657194a0ca3395",
   "lastOpenFiles": [
-    "01_Game_Design_Document.md",
-    "16_Project_Overview_For_Beginners.md",
+    "06_Asset_List.md",
+    "ProjectVisualization.md",
+    "TrelloCards.md",
+    "05_Milestone_Schedule.md",
+    "10_ForageWithMe_Technical_Overview.md",
     "15_Getting_Started_Guide.md",
+    "16_Project_Overview_For_Beginners.md",
+    "01_Game_Design_Document.md",
     "14_Resource_Relationships.md",
     "13_Development_Workflow.md",
     "12_Signal_System_Overview.md",
     "11_Script_Documentation.md",
-    "10_ForageWithMe_Technical_Overview.md",
     "Scripts_Signal_Flow.md",
     "09_Steam_Release_Checklist.md",
     "Welcome.md",
     "Scripts_Structure.md",
     "07_Development_Guidelines.md",
     "08_Marketing_Plan.md",
-    "06_Asset_List.md",
-    "05_Milestone_Schedule.md",
     "04_Project_Management_Plan.md",
     "03_Technical_Design_Document.md",
     "02_Art_Style_Guide.md"
