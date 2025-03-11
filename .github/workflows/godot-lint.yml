@@ -49,13 +49,13 @@ jobs:
         run: |
           echo "Checking file naming conventions..."
           # Check for scene files (.tscn) using PascalCase
-          find foragewithme -name "*.tscn" -type f -not -path "*/addons/*" | grep -v '[A-Z][a-zA-Z0-9]*\.tscn$' > .tscn_naming_violations.txt
+          find foragewithme -name "*.tscn" -type f -not -path "*/addons/*" | grep -v '[A-Z][a-zA-Z0-9]*\.tscn$' > .tscn_naming_violations.txt || true
           
           # Check for script files (.gd) using snake_case
-          find foragewithme -name "*.gd" -type f -not -path "*/addons/*" | grep -v '[a-z][a-z0-9_]*\.gd$' > .gd_naming_violations.txt
+          find foragewithme -name "*.gd" -type f -not -path "*/addons/*" | grep -v '[a-z][a-z0-9_]*\.gd$' > .gd_naming_violations.txt || true
           
           # Check for resource files (.tres) using snake_case
-          find foragewithme -name "*.tres" -type f -not -path "*/addons/*" | grep -v '[a-z][a-z0-9_]*\.tres$' > .tres_naming_violations.txt
+          find foragewithme -name "*.tres" -type f -not -path "*/addons/*" | grep -v '[a-z][a-z0-9_]*\.tres$' > .tres_naming_violations.txt || true
           
           # Display violations
           echo "Scene file (.tscn) naming violations (should be PascalCase):"
@@ -65,8 +65,13 @@ jobs:
           echo "Resource file (.tres) naming violations (should be snake_case):"
           cat .tres_naming_violations.txt
           
-          # Fail if any violations are found
-          [ ! -s .tscn_naming_violations.txt ] && [ ! -s .gd_naming_violations.txt ] && [ ! -s .tres_naming_violations.txt ]
+          # Check if any violations exist and fail accordingly
+          if [ -s .tscn_naming_violations.txt ] || [ -s .gd_naming_violations.txt ] || [ -s .tres_naming_violations.txt ]; then
+            echo "Error: File naming convention violations found!"
+            exit 1
+          else
+            echo "Success: No file naming convention violations found."
+          fi
 
       - name: Create custom gdlint.toml file
         run: |
