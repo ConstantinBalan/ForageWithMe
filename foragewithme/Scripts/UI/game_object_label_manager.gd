@@ -1,6 +1,6 @@
 extends Node3D
 
-const FloatingPromptScene = preload("res://Scenes/UI/floating_prompt.tscn")
+const FloatingPromptScene = preload("res://Scenes/UI/FloatingPrompt.tscn")
 
 var active_prompts = {}
 var label_offset = Vector3(0, 1.5, 0) # Default offset above objects

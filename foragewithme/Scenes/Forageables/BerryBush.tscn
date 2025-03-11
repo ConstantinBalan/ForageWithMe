@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=3 uid="uid://dghjyi4wyxwpv"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_7g6g1"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_6rwhb"]
+
+[node name="BerryBush" type="StaticBody3D" groups=["interactable"]]
+collision_layer = 3
+
+[node name="ForageableComponent" type="Node" parent="."]
+
+[node name="InteractableComponent" type="Node" parent="."]
+
+[node name="FloatingPromptComponent" type="Node3D" parent="InteractableComponent"]
+
+[node name="Label3D" type="Label3D" parent="InteractableComponent/FloatingPromptComponent"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+no_depth_test = true
+text = "Placeholder"
+font_size = 24
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.511285, 0)
+shape = SubResource("SphereShape3D_7g6g1")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.511285, 0)
+mesh = SubResource("SphereMesh_6rwhb")

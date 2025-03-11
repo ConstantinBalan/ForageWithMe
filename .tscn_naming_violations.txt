@@ -1,0 +1,9 @@
+foragewithme/Scenes/UI/loading_screen.tscn
+foragewithme/Scenes/UI/floating_prompt.tscn
+foragewithme/Scenes/UI/inventory_ui.tscn
+foragewithme/Scenes/UI/inventory_slot.tscn
+foragewithme/Scenes/test_forageable.tscn
+foragewithme/Scenes/Zones/forest_area.tscn
+foragewithme/Scenes/Forageables/forageable_object.tscn
+foragewithme/Scenes/Forageables/berry_bush.tscn
+foragewithme/Scenes/Characters/player.tscn

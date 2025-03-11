@@ -7,7 +7,7 @@ signal scene_preload_completed
 signal all_loading_completed
 
 # Constants first
-const LOADING_SCREEN_PATH = "res://Scenes/UI/loading_screen.tscn"
+const LOADING_SCREEN_PATH = "res://Scenes/UI/LoadingScreen.tscn"
 
 # Simple public variables next
 var total_items_to_load = 0
@@ -18,21 +18,21 @@ var ui_canvas_layer = null
 
 # Resource arrays (complex public variables)
 var ui_scenes = [
-	"res://Scenes/UI/floating_prompt.tscn",
-	"res://Scenes/UI/inventory_ui.tscn",
-	"res://Scenes/UI/inventory_slot.tscn",
-	"res://Scenes/UI/loading_screen.tscn",
+	"res://Scenes/UI/FloatingPrompt.tscn",
+	"res://Scenes/UI/InventoryUI.tscn",
+	"res://Scenes/UI/InventorySlot.tscn",
+	"res://Scenes/UI/LoadingScreen.tscn",
 ]
 
 var gameplay_scenes = [
-	"res://Scenes/Forageables/forageable_object.tscn",
-	"res://Scenes/Forageables/berry_bush.tscn",
-	"res://Scenes/Zones/forest_area.tscn",
-	"res://Scenes/test_forageable.tscn",
+	"res://Scenes/Forageables/ForageableObject.tscn",
+	"res://Scenes/Forageables/BerryBush.tscn",
+	"res://Scenes/Zones/ForestArea.tscn",
+	"res://Scenes/TestForageable.tscn",
 ]
 
 var character_scenes = [
-	"res://Scenes/Characters/player.tscn",
+	"res://Scenes/Characters/Player.tscn",
 ]
 
 var shaders = [
@@ -43,11 +43,11 @@ var shaders = [
 # Private variables (with underscore prefix) last
 var _test_shader_compilation = null
 var _quirky_loading_messages = [
-    "Gathering acorns...",
-    "Herding squirrels...",
-    "Chasing fireflies...",
-    "Whispering to the trees...",
-    "Counting tree rings..."
+	"Gathering acorns...",
+	"Herding squirrels...",
+	"Chasing fireflies...",
+	"Whispering to the trees...",
+	"Counting tree rings..."
 ]
 
 func _ready():
@@ -172,7 +172,7 @@ func _preload_scenes(scene_list):
 func _update_loading_screen():
 	if loading_screen:
 		loading_screen.set_progress(items_loaded, total_items_to_load)
-		current_operation = _get_random_loading_message() # Select a new random message
+		current_operation = get_random_loading_message() # Select a new random message
 		loading_screen.set_status(current_operation)
 
 # Transition to a new scene with loading screen
@@ -215,5 +215,5 @@ func change_scene(target_scene_path):
 
 	loading_screen.finish_loading()
 
-func _get_random_loading_message():
+func get_random_loading_message():
 	return _quirky_loading_messages[randi() % _quirky_loading_messages.size()]
