@@ -1,10 +1,5 @@
-extends Character
 class_name Player
-
-@onready var camera_holder = $CameraHolder
-@onready var camera = $CameraHolder/Camera3D
-@onready var interaction_ray = %InteractionRay
-@onready var inventory_controller = get_tree().get_first_node_in_group("inventory_controller")
+extends Character
 
 const FOV_NORMAL = 75.0
 const FOV_SPRINT = 85.0
@@ -17,18 +12,23 @@ var is_sprinting: bool = false
 var player_speed = speed
 var current_interactable: GameObject = null
 
+@onready var camera_holder = $CameraHolder
+@onready var camera = $CameraHolder/Camera3D
+@onready var interaction_ray = %InteractionRay
+@onready var inventory_controller = get_tree().get_first_node_in_group("inventory_controller")
+
 func _ready():
 	super._ready()
 	player_speed = clampf(speed, 5.0, 10.0)
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	add_to_group("player")
-	
+
 	# Setup interaction raycast
 	if !interaction_ray:
 		interaction_ray = RayCast3D.new()
 		add_child(interaction_ray)
 		interaction_ray.name = "InteractionRay"
-	
+
 	# Position the ray at head height
 	interaction_ray.position.y = HEAD_HEIGHT
 	interaction_ray.target_position = Vector3(0, 0, -INTERACTION_DISTANCE)
@@ -40,16 +40,16 @@ func _physics_process(delta):
 	# Lock player rotation to initial rotation during orbit mode
 	if camera_holder.is_orbiting:
 		rotation.y = camera_holder.initial_player_rotation
-		
+
 	handle_movement_intent(delta)
 	handle_fov(delta)
 	update_interaction_ray()
 	check_interaction()
-	
+
 	# Apply gravity
 	if not is_on_floor():
 		velocity.y += GRAVITY * delta
-	
+
 	move_and_slide()
 
 func update_interaction_ray() -> void:
@@ -63,11 +63,11 @@ func handle_movement_intent(delta):
 		player_speed = move_toward(player_speed, sprint_speed, delta * 10)
 	else:
 		player_speed = move_toward(player_speed, speed, delta * 10)
-	
+
 	# Get input direction and transform it relative to the player's rotation
 	var input_dir = Input.get_vector("Move Backward", "Move Forward", "Move Left", "Move Right")
 	var direction = Vector3.ZERO
-	
+
 	# Only use camera basis for movement when not in orbit mode
 	if !camera_holder.is_orbiting:
 		direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
@@ -75,7 +75,7 @@ func handle_movement_intent(delta):
 		# During orbit, use the stored initial rotation for movement
 		var basis = Transform3D(Basis.from_euler(Vector3(0, camera_holder.initial_player_rotation, 0)))
 		direction = (basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-	
+
 	# Apply movement
 	if direction:
 		velocity.x = direction.x * player_speed
@@ -113,18 +113,18 @@ func check_interaction():
 func _input(event):
 	if event is InputEventMouseMotion:
 		rotate_y(deg_to_rad(event.relative.x * -0.04)) # Rotate the player with mouse
-	
+
 	if event.is_action_pressed("ui_cancel"):
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-	
+
 	if event.is_action_pressed("Jump") and is_on_floor():
 		velocity.y = jump_velocity
-	
+
 	if event.is_action_pressed("Sprint"):
 		is_sprinting = true
 	elif event.is_action_released("Sprint"):
 		is_sprinting = false
-	
+
 	# Handle interaction input
 	if event.is_action_pressed("Interact") and current_interactable:
 		current_interactable.interact_with(self)

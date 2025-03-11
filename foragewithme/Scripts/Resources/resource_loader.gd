@@ -1,6 +1,5 @@
-extends Node
-
 class_name GameResourceLoader
+extends Node
 
 # Resource paths
 const FORAGEABLE_PATH = "res://Resources/Forageables/"

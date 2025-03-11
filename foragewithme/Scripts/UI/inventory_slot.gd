@@ -11,7 +11,7 @@ var tooltip_label: Label
 func _ready():
 	# Set minimum size for the slot
 	custom_minimum_size = Vector2(64, 64)
-	
+
 	# Create styles
 	default_style = StyleBoxFlat.new()
 	default_style.bg_color = Color(0.2, 0.2, 0.2, 0.8)
@@ -20,7 +20,7 @@ func _ready():
 	default_style.border_width_right = 2
 	default_style.border_width_bottom = 2
 	default_style.border_color = Color(0.1, 0.1, 0.1, 1)
-	
+
 	hover_style = StyleBoxFlat.new()
 	hover_style.bg_color = Color(0.3, 0.3, 0.3, 0.8)
 	hover_style.border_width_left = 2
@@ -28,7 +28,7 @@ func _ready():
 	hover_style.border_width_right = 2
 	hover_style.border_width_bottom = 2
 	hover_style.border_color = Color(1, 1, 1, 1)
-	
+
 	drag_style = StyleBoxFlat.new()
 	drag_style.bg_color = Color(0.4, 0.4, 0.4, 0.8)
 	drag_style.border_width_left = 2
@@ -36,24 +36,24 @@ func _ready():
 	drag_style.border_width_right = 2
 	drag_style.border_width_bottom = 2
 	drag_style.border_color = Color(1, 0.8, 0, 1)
-	
+
 	# Set initial style
 	add_theme_stylebox_override("panel", default_style)
-	
+
 	# Enable mouse input
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	
+
 	# Connect mouse signals
 	mouse_entered.connect(_on_mouse_entered)
 	mouse_exited.connect(_on_mouse_exited)
-	
+
 	# Create tooltip label
 	tooltip_label = Label.new()
 	tooltip_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	tooltip_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	tooltip_label.visible = false
-	
+
 	# Style the tooltip
 	var tooltip_style = StyleBoxFlat.new()
 	tooltip_style.bg_color = Color(0.1, 0.1, 0.1, 0.9)
@@ -70,7 +70,7 @@ func _ready():
 	tooltip_style.content_margin_right = 8
 	tooltip_style.content_margin_top = 4
 	tooltip_style.content_margin_bottom = 4
-	
+
 	tooltip_label.add_theme_stylebox_override("normal", tooltip_style)
 	add_child(tooltip_label)
 
@@ -112,7 +112,7 @@ func _gui_input(_event: InputEvent) -> void:
 func update_item(new_item_data: Dictionary) -> void:
 	item_data = new_item_data
 	queue_redraw()
-	
+
 	# Hide tooltip if item is removed
 	if item_data.is_empty():
 		tooltip_label.visible = false
@@ -120,7 +120,7 @@ func update_item(new_item_data: Dictionary) -> void:
 func _draw() -> void:
 	if item_data.is_empty():
 		return
-		
+
 	if "texture" in item_data and item_data.texture:
 		var texture = item_data.texture
 		var scale = min(size.x / texture.get_width(), size.y / texture.get_height())
@@ -130,7 +130,7 @@ func _draw() -> void:
 			(size.y - draw_size.y) / 2
 		)
 		draw_texture_rect(texture, Rect2(position, draw_size), false)
-		
+
 	if "quantity" in item_data and item_data.quantity > 1:
 		var font = ThemeDB.fallback_font
 		var font_size = 16

@@ -1,6 +1,6 @@
 @tool
-extends Resource
 class_name VillagerData
+extends Resource
 
 @export var name: String = ""
 @export var portrait: Texture2D
@@ -8,7 +8,7 @@ class_name VillagerData
 @export var default_mood: String = "neutral"
 
 # Visual representation
-@export var mesh: Mesh  # For 3D representation
+@export var mesh: Mesh # For 3D representation
 @export var scale: Vector3 = Vector3.ONE
 
 # Schedule - Dictionary of time -> activity

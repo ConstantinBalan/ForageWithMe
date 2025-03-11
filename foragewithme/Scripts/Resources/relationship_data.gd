@@ -1,6 +1,6 @@
 @tool
-extends Resource
 class_name RelationshipData
+extends Resource
 
 @export var villager_id: String = ""
 @export var friendship_level: int = 0

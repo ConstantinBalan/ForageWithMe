@@ -29,7 +29,21 @@ jobs:
       - name: Lint GDScript files
         run: |
           echo "Checking GDScript files for linting issues..."
+          echo "=================================================="
+          echo "When errors appear with 'class-definitions-order', please ensure you follow this order:"
+          echo "1. Class/tool declarations"
+          echo "2. Enums and constants (const VAR_NAME = value)"
+          echo "3. Exported variables (@export var var_name = value)"
+          echo "4. Public variables (var var_name = value)"
+          echo "5. Private variables (var _var_name = value)"
+          echo "6. Onready variables (@onready var var_name = $Node)"
+          echo "7. Built-in virtual methods (func _ready(), _process(), etc.)"
+          echo "8. Public methods (func method_name())"
+          echo "9. Private methods (func _method_name())"
+          echo "10. Signal callbacks (func _on_signal_name())"
+          echo "=================================================="
           find foragewithme -name "*.gd" -type f -not -path "*/addons/*" -print0 | xargs -0 -I{} gdlint {} || true
+          echo ""
       
       - name: Check file naming conventions
         run: |
@@ -77,13 +91,43 @@ jobs:
       - name: Run custom linting with configuration
         run: |
           echo "Running GDScript linting with custom configuration..."
+          echo "=================================================="
+          echo "Common linting errors and how to fix them:"
+          echo ""
+          echo "class-definitions-order:"
+          echo "  - Description: Variable and method definitions appear in the wrong order"
+          echo "  - Fix: Arrange your code following the standard GDScript structure (see above)"
+          echo "  - Example: @onready variables should appear after regular variables"
+          echo ""
+          echo "expression-not-assigned:"
+          echo "  - Description: Expression result unused"
+          echo "  - Fix: Ensure the expression result is assigned or used appropriately"
+          echo ""
+          echo "unnecessary-pass:"
+          echo "  - Description: Unnecessary 'pass' statement"
+          echo "  - Fix: Remove 'pass' statements from blocks that have other code"
+          echo ""
+          echo "class-name-convention:"
+          echo "  - Description: Class names should use PascalCase"
+          echo "  - Fix: Rename your class to follow PascalCase (e.g., 'class_name MyClass')"
+          echo ""
+          echo "function-name-convention:"
+          echo "  - Description: Function names should use snake_case"
+          echo "  - Fix: Rename your function using snake_case (e.g., 'func my_function()')"
+          echo "=================================================="
           find foragewithme -name "*.gd" -type f -not -path "*/addons/*" -print0 | xargs -0 -I{} gdlint --config gdlint.toml {} || true
+          echo ""
       
       - name: Run comprehensive custom linting
         run: |
           echo "Running comprehensive custom linting..."
+          echo "=================================================="
+          echo "This custom linting step checks for project-specific standards."
+          echo "If errors are found, please follow the guidelines in the project documentation."
+          echo "=================================================="
           chmod +x .github/scripts/godot_custom_lint.py
           python .github/scripts/godot_custom_lint.py foragewithme
+          echo ""
           
       - name: Summary
         run: |

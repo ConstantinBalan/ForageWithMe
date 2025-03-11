@@ -1,13 +1,13 @@
 extends CanvasLayer
 
+# Track UI states
+var active_panel = null
+var ui_stack = [] # For managing multiple UI elements
+
 @onready var dialogue_panel = $Panels/DialoguePanel
 #@onready var interaction_prompt = $Prompts/InteractionPrompt
 @onready var relationship_display = $HUD/RelationshipDisplay
 #@onready var tool_bar = $HUD/ToolBar
-
-# Track UI states
-var active_panel = null
-var ui_stack = []  # For managing multiple UI elements
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

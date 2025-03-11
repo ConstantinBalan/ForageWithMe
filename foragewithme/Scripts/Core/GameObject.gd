@@ -1,10 +1,10 @@
-extends StaticBody3D
 class_name GameObject
+extends StaticBody3D
 
+@export var hover_label_text: String = "" # Text to show when hovered
 # Base class for all game objects
 var object_id: String
 var interaction_range: float = 2.0 # Kept for backward compatibility
-@export var hover_label_text: String = ""  # Text to show when hovered
 
 func _init():
 	object_id = str(get_instance_id())

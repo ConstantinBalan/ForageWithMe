@@ -23,12 +23,20 @@ var player_data = {
 func save_game_data():
 	if get_tree().has_group("player"):
 		var player = get_tree().get_nodes_in_group("player")[0]
-		if player is Player:  # Check if it's our Player class
+		if player is Player: # Check if it's our Player class
 			# Save inventory data directly from player
-			player_data["player"]["inventory"] = player.inventory if "inventory" in player else []
-			player_data["player"]["recipes"] = player.recipes if "recipes" in player else []
-			player_data["player"]["unlocked_tools"] = player.unlocked_tools if "unlocked_tools" in player else []
-			player_data["player"]["relationships"] = player.relationships if "relationships" in player else {}
+			player_data["player"]["inventory"] = (
+				player.inventory if "inventory" in player else []
+			)
+			player_data["player"]["recipes"] = (
+				player.recipes if "recipes" in player else []
+			)
+			player_data["player"]["unlocked_tools"] = (
+				player.unlocked_tools if "unlocked_tools" in player else []
+			)
+			player_data["player"]["relationships"] = (
+				player.relationships if "relationships" in player else {}
+			)
 
 			var json_string = JSON.stringify(player_data, "\t")
 			var file = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
@@ -48,7 +56,7 @@ func load_game_data():
 			player_data = loaded_data
 			if get_tree().has_group("player"):
 				var player = get_tree().get_nodes_in_group("player")[0]
-				if player is Player:  # Check if it's our Player class
+				if player is Player: # Check if it's our Player class
 					# Load data directly into player properties
 					if "inventory" in player_data["player"]:
 						player.inventory = player_data["player"]["inventory"]
@@ -58,9 +66,10 @@ func load_game_data():
 						player.unlocked_tools = player_data["player"]["unlocked_tools"]
 					if "relationships" in player_data["player"]:
 						player.relationships = player_data["player"]["relationships"]
-					
+
 					# Emit any necessary signals
-					player.emit_signal("inventory_changed") if "inventory_changed" in player.get_signal_list() else null
+					if "inventory_changed" in player.get_signal_list():
+						player.emit_signal("inventory_changed")
 		else:
 			printerr("Error loading game data: Invalid save file format.")
 		file.close()

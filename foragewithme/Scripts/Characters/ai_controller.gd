@@ -9,9 +9,10 @@
 # - Villager.gd (state_changed)
 # - Interacts with DialogueSystem.gd and Schedule.gd
 ###
+class_name AIController
 extends Node
 
-class_name AIController
+signal state_changed(new_state)
 
 # Reference to the parent villager node
 var villager: Villager
@@ -34,9 +35,7 @@ var state: AIState = AIState.IDLE
 var schedule: Schedule
 var interaction_range: float = 2.0
 var thinking_time: float = 0.0
-var decision_interval: float = 1.0  # How often to make decisions
-
-signal state_changed(new_state)
+var decision_interval: float = 1.0 # How often to make decisions
 
 ### _init
 # Constructor that initializes the controller with a reference to its parent villager
@@ -66,12 +65,12 @@ func _ready():
 func _process(delta):
 	# Update thinking time
 	thinking_time += delta
-	
+
 	# Only make decisions at certain intervals
 	if thinking_time >= decision_interval:
 		make_decision()
 		thinking_time = 0.0
-	
+
 	# Process the current state
 	match state:
 		AIState.IDLE:
@@ -95,11 +94,11 @@ func make_decision():
 	if scheduled_activity:
 		handle_scheduled_activity(scheduled_activity)
 		return
-	
+
 	# If no scheduled activity, use behavior patterns
 	var rand = randf()
-	
-	if rand < 0.1:  # 10% chance to change state when no schedule
+
+	if rand < 0.1: # 10% chance to change state when no schedule
 		var new_state = randi() % AIState.size()
 		change_state(new_state)
 
@@ -137,7 +136,7 @@ func handle_scheduled_activity(activity: Dictionary):
 ###
 func process_idle_state(_delta):
 	# Just stand around, occasionally look around
-	if randf() < 0.05:  # 5% chance per process call to play idle animation
+	if randf() < 0.05: # 5% chance per process call to play idle animation
 		villager.play_animation("idle_look_around")
 
 ### process_walking_state
@@ -152,12 +151,12 @@ func process_walking_state(_delta):
 		# Path is complete
 		change_state(AIState.IDLE)
 		return
-		
+
 	# Move along path
 	var target_point = current_path[path_index]
 	var direction = (target_point - villager.global_position).normalized()
 	villager.move_in_direction(direction)
-	
+
 	# Check if reached current waypoint
 	if villager.global_position.distance_to(target_point) < 0.5:
 		path_index += 1
@@ -172,7 +171,7 @@ func process_walking_state(_delta):
 func process_working_state(_delta):
 	# Play working animation
 	villager.play_animation("working")
-	
+
 	# Check if work time is finished from schedule
 	if not schedule.is_current_activity_valid():
 		change_state(AIState.IDLE)
@@ -188,7 +187,7 @@ func process_talking_state(_delta):
 	# Face the target if there is one
 	if current_target:
 		villager.face_direction(current_target.global_position - villager.global_position)
-		
+
 	# Check if conversation should end
 	if not current_target or not schedule.is_current_activity_valid():
 		change_state(AIState.IDLE)
@@ -203,7 +202,7 @@ func process_talking_state(_delta):
 func process_resting_state(_delta):
 	# Play resting animation
 	villager.play_animation("resting")
-	
+
 	# Check if rest time is finished
 	if not schedule.is_current_activity_valid():
 		change_state(AIState.IDLE)
@@ -216,7 +215,7 @@ func process_resting_state(_delta):
 ###
 func change_state(new_state: int):
 	state = new_state
-	
+
 	match state:
 		AIState.IDLE:
 			villager.play_animation("idle")
@@ -240,7 +239,7 @@ func change_state(new_state: int):
 func set_path(path: Array):
 	current_path = path
 	path_index = 0
-	
+
 	if path.size() > 0:
 		change_state(AIState.WALKING)
 
@@ -253,7 +252,7 @@ func set_path(path: Array):
 ###
 func move_to_location(location: Vector3):
 	# This would use navigation mesh in full implementation
-	var path = [location]  # Simplified - in real game would request path from navigation
+	var path = [location] # Simplified - in real game would request path from navigation
 	set_path(path)
 
 ### move_to_target
@@ -276,7 +275,7 @@ func move_to_target(target: Node):
 func interact_with_player(player: Player):
 	change_state(AIState.TALKING)
 	current_target = player
-	
+
 	# Get dialogue system and start conversation
 	var dialogue_system = villager.get_node_or_null("DialogueSystem")
 	if dialogue_system:
@@ -295,7 +294,7 @@ func react_to_event(event_type: String, event_data: Dictionary):
 		"player_nearby":
 			# React to player being nearby
 			var player = event_data.player
-			if randf() < 0.3:  # 30% chance to acknowledge player
+			if randf() < 0.3: # 30% chance to acknowledge player
 				face_towards(player.global_position)
 				villager.play_animation("wave")
 		"weather_changed":

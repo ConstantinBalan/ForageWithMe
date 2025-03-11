@@ -62,19 +62,18 @@ func add_quest(quest_id: String) -> bool:
 	if active_quests.has(quest_id) or completed_quests.has(quest_id):
 		print("Quest already active or completed: " + quest_id)
 		return false
-		
+
 	if available_quests.has(quest_id):
 		var quest_data = available_quests[quest_id].duplicate()
 		quest_data.progress = 0
 		quest_data.started_at = Time.get_unix_time_from_system()
 		active_quests[quest_id] = quest_data
-		
+
 		emit_signal("quest_added", quest_id)
 		print("Quest added: " + quest_id)
 		return true
-	else:
-		print("Quest not found: " + quest_id)
-		return false
+	print("Quest not found: " + quest_id)
+	return false
 
 ### update_quest_progress
 # Updates progress on a quest
@@ -90,17 +89,17 @@ func update_quest_progress(quest_id: String, progress_amount: int) -> bool:
 	if not active_quests.has(quest_id):
 		print("Attempt to update non-active quest: " + quest_id)
 		return false
-		
+
 	var quest = active_quests[quest_id]
 	quest.progress += progress_amount
-	
+
 	emit_signal("quest_updated", quest_id, quest.progress)
 	print("Updated progress for quest %s: %d/%d" % [quest_id, quest.progress, quest.required_progress])
-	
+
 	# Check if quest is now complete
 	if quest.progress >= quest.required_progress:
 		complete_quest(quest_id)
-		
+
 	return true
 
 ### complete_quest
@@ -113,21 +112,21 @@ func complete_quest(quest_id: String) -> bool:
 	if not active_quests.has(quest_id):
 		print("Attempt to complete non-active quest: " + quest_id)
 		return false
-		
+
 	var quest = active_quests[quest_id]
 	var completion_data = {
 		"completed_at": Time.get_unix_time_from_system(),
 		"time_taken": Time.get_unix_time_from_system() - quest.started_at,
 		"quest_data": quest
 	}
-	
+
 	# Move from active to completed
 	completed_quests[quest_id] = completion_data
 	active_quests.erase(quest_id)
-	
+
 	# Handle rewards
 	give_quest_rewards(quest_id, quest.rewards)
-	
+
 	emit_signal("quest_completed", quest_id, quest.rewards)
 	print("Quest completed: " + quest_id)
 	return true
@@ -143,7 +142,7 @@ func fail_quest(quest_id: String, reason: String = "") -> bool:
 	if not active_quests.has(quest_id):
 		print("Attempt to fail non-active quest: " + quest_id)
 		return false
-		
+
 	var quest = active_quests[quest_id]
 	var failure_data = {
 		"failed_at": Time.get_unix_time_from_system(),
@@ -151,11 +150,11 @@ func fail_quest(quest_id: String, reason: String = "") -> bool:
 		"reason": reason,
 		"quest_data": quest
 	}
-	
+
 	# Move from active to failed
 	failed_quests[quest_id] = failure_data
 	active_quests.erase(quest_id)
-	
+
 	emit_signal("quest_failed", quest_id)
 	print("Quest failed: " + quest_id + (", Reason: " + reason if reason else ""))
 	return true
@@ -173,15 +172,15 @@ func give_quest_rewards(quest_id: String, rewards: Dictionary) -> void:
 		for item in rewards.items:
 			if PlayerDataManager.add_item_to_inventory(item.id, item.quantity):
 				print("Added reward item: %s x%d" % [item.id, item.quantity])
-	
+
 	if rewards.has("currency"):
 		# If we had a currency system
 		print("Added reward currency: %d" % rewards.currency)
-	
+
 	if rewards.has("experience"):
 		# If we had an experience system
 		print("Added reward experience: %d" % rewards.experience)
-	
+
 	if rewards.has("relationship"):
 		for villager_id in rewards.relationship:
 			var amount = rewards.relationship[villager_id]

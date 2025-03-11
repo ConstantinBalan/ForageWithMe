@@ -1,12 +1,13 @@
-extends Node3D
 class_name FloatingPrompt
-
-@onready var label_3d = $Label3D
-@onready var animation_player = $AnimationPlayer
+extends Node3D
 
 var target: Node3D
 var offset: Vector3 = Vector3(0, 2, 0)
 var is_visible: bool = false
+
+@onready var label_3d = $Label3D
+@onready var animation_player = $AnimationPlayer
+
 
 func _ready():
 	# Instead of hide(), set initial alpha to 0
@@ -19,7 +20,7 @@ func _process(_delta):
 		var camera = get_viewport().get_camera_3d()
 		if camera:
 			look_at(camera.global_position, Vector3.UP)
-			rotate_y(PI)  # Flip to face camera correctly
+			rotate_y(PI) # Flip to face camera correctly
 
 func show_prompt(text: String, target_node: Node3D, duration: float = 2.0) -> void:
 	target = target_node

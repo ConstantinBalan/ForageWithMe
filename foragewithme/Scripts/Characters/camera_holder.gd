@@ -1,24 +1,9 @@
 extends SpringArm3D
 
-@onready var camera: Camera3D = $Camera3D
-@onready var inventory_controller = get_tree().get_first_node_in_group("inventory_controller")
-
 # Camera constraints for vertical rotation
 const VERTICAL_LOW = deg_to_rad(-45) # Maximum look-up angle
 const VERTICAL_HIGH = deg_to_rad(60) # Maximum look-down angle
 const MOUSE_SENSITIVITY = 0.04
-
-# Camera states
-var is_orbiting: bool = false
-var is_transitioning: bool = false
-var vertical_rotation: float = 0.0
-var camera_enabled: bool = true  # New flag to control camera movement
-var initial_player_rotation: float = 0.0  # Store player's initial rotation when orbiting
-
-# Transition state
-var transition_weight: float = 0.0
-var start_transform: Transform3D
-var target_y_rotation: float = 0.0
 
 # Spring arm configuration
 const ARM_HEIGHT = 1.0
@@ -30,13 +15,28 @@ const TRANSITION_DURATION = 0.5
 const TRANSITION_EASE = Tween.EASE_OUT
 const TRANSITION_TRANS = Tween.TRANS_CUBIC
 
+# Camera states
+var is_orbiting: bool = false
+var is_transitioning: bool = false
+var vertical_rotation: float = 0.0
+var camera_enabled: bool = true # New flag to control camera movement
+var initial_player_rotation: float = 0.0 # Store player's initial rotation when orbiting
+
+# Transition state
+var transition_weight: float = 0.0
+var start_transform: Transform3D
+var target_y_rotation: float = 0.0
+
+@onready var camera: Camera3D = $Camera3D
+@onready var inventory_controller = get_tree().get_first_node_in_group("inventory_controller")
+
 func _ready():
 	# Set up spring arm properties
 	spring_length = ARM_LENGTH
 	margin = 0.25
 	shape = create_shape()
 	collision_mask = 1
-	
+
 	# Set initial position and rotation
 	position = Vector3(0, ARM_HEIGHT, 0)
 	rotation.y = INITIAL_Y_ROTATION
@@ -63,13 +63,13 @@ func normalize_angle(angle: float) -> float:
 func _input(event: InputEvent) -> void:
 	if !camera_enabled:
 		return
-		
+
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT:
 		if event.pressed and !is_transitioning:
 			start_orbit()
 		elif !event.pressed and is_orbiting:
 			end_orbit()
-	
+
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		handle_mouse_motion(event)
 
@@ -82,7 +82,7 @@ func handle_mouse_motion(event: InputEventMouseMotion) -> void:
 		VERTICAL_HIGH
 	)
 	rotation.x = vertical_rotation
-	
+
 	# Handle horizontal rotation
 	var delta_horizontal = event.relative.x * MOUSE_SENSITIVITY * 0.01
 	if is_orbiting:
@@ -104,26 +104,26 @@ func end_orbit() -> void:
 	if !is_orbiting:
 		return
 	is_orbiting = false
-	
+
 	# Reset player rotation to initial state when ending orbit
 	var player = get_tree().get_first_node_in_group("player")
 	if player:
 		player.rotation.y = initial_player_rotation
-	
+
 	# Store our current transform
 	start_transform = transform
-	
+
 	# Calculate target rotation
 	target_y_rotation = INITIAL_Y_ROTATION
-	
+
 	# Start transition
 	is_transitioning = true
 	transition_weight = 0.0
-	
+
 	var tween = create_tween()
 	tween.set_trans(TRANSITION_TRANS)
 	tween.set_ease(TRANSITION_EASE)
-	
+
 	# Smoothly interpolate the transition weight
 	tween.tween_property(
 		self,
@@ -131,7 +131,7 @@ func end_orbit() -> void:
 		1.0,
 		TRANSITION_DURATION
 	)
-	
+
 	# Clean up when transition completes
 	tween.finished.connect(func():
 		is_transitioning = false
@@ -151,6 +151,6 @@ func _physics_process(_delta: float) -> void:
 	elif !is_orbiting:
 		# When not orbiting or transitioning, maintain home position
 		rotation.y = INITIAL_Y_ROTATION
-	
+
 	# Always maintain correct height
 	position.y = lerp(position.y, ARM_HEIGHT, 0.1)

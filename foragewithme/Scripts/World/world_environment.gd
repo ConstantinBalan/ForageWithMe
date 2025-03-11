@@ -10,9 +10,3 @@ func _ready():
 	environment.tonemap_mode = Environment.TONE_MAPPER_FILMIC
 	environment.ssao_enabled = true
 	environment.glow_enabled = true
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass

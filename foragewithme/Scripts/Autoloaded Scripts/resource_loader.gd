@@ -43,7 +43,7 @@ func load_all_resources() -> void:
 	load_resources_in_directory(RECIPE_PATH, recipes, RecipeData)
 	load_resources_in_directory(DIALOGUE_PATH, dialogues, DialogueData)
 	load_resources_in_directory(QUEST_PATH, quests, QuestData)
-	
+
 	print("ResourceLoader: Loaded %d forageables" % forageables.size())
 	print("ResourceLoader: Loaded %d villagers" % villagers.size())
 	print("ResourceLoader: Loaded %d recipes" % recipes.size())
@@ -58,6 +58,7 @@ func load_all_resources() -> void:
 # - cache: Dictionary to store loaded resources in
 # - resource_type: The type of resource to validate against
 ###
+# gdlint: disable=unused-argument
 func load_resources_in_directory(path: String, cache: Dictionary, resource_type) -> void:
 	var dir = DirAccess.open(path)
 	if dir:
@@ -120,7 +121,7 @@ func get_recipe(id: String) -> RecipeData:
 ###
 func get_dialogue(id: String) -> DialogueData:
 	return dialogues.get(id)
-	
+
 ### get_quest
 # Retrieves a quest data resource by ID
 #
@@ -159,7 +160,7 @@ func get_all_villagers() -> Array:
 ###
 func get_all_recipes() -> Array:
 	return recipes.values()
-	
+
 ### get_all_quests
 # Retrieves all quest data resources
 #
@@ -245,7 +246,7 @@ func get_recipes_by_difficulty(difficulty: int) -> Array:
 		if recipe.difficulty == difficulty:
 			filtered.append(recipe)
 	return filtered
-	
+
 ### get_recipes_by_ingredient
 # Retrieves recipes that require a specific ingredient
 #
@@ -263,7 +264,7 @@ func get_recipes_by_ingredient(ingredient_id: String) -> Array:
 				filtered.append(recipe)
 				break
 	return filtered
-	
+
 ### get_quests_by_type
 # Retrieves quests filtered by quest type
 #

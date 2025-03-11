@@ -1,6 +1,6 @@
 @tool
-extends Resource
 class_name DialogueData
+extends Resource
 
 @export var dialogue_id: String = ""
 @export var speaker: String = ""
@@ -13,8 +13,11 @@ class_name DialogueData
 @export var required_quests_completed: Array[String] = []
 
 # Dialogue options and responses
-@export var options: Array[Dictionary] = []  # Array of {text: String, next_dialogue: String, requirements: Dictionary}
-@export var responses: Dictionary = {}  # Mapping of option -> response dialogue
+@export var options: Array[Dictionary] = []
+# Array of {text: String, next_dialogue: String, requirements: Dictionary}
+
+@export var responses: Dictionary = {}
+# Mapping of option -> response dialogue
 
 # Dialogue effects
 @export var relationship_change: float = 0.0

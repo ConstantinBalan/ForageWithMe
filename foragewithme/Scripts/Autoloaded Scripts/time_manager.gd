@@ -26,30 +26,30 @@ const MINUTES_PER_HOUR = 60
 const HOURS_PER_DAY = 24
 const DAYS_PER_SEASON = 7
 const SEASONS_PER_YEAR = 4
-const TIME_SCALE = 30.0  # 1 real-second = 30 in-game minutes
+const TIME_SCALE = 30.0 # 1 real-second = 30 in-game minutes
 
 # Time tracking
 var current_minute: int = 0
-var current_hour: int = 6  # Game starts at 6:00 AM
+var current_hour: int = 6 # Game starts at 6:00 AM
 var current_day: int = 1
-var current_season: int = 0  # 0: Spring, 1: Summer, 2: Fall, 3: Winter
+var current_season: int = 0 # 0: Spring, 1: Summer, 2: Fall, 3: Winter
 var current_year: int = 1
 
 # Time flow control
 var time_paused: bool = false
-var time_scale: float = 1.0  # 1.0 = normal speed
-var ticks_per_minute: float = 1.0  # How many real seconds per game minute
+var time_scale: float = 1.0 # 1.0 = normal speed
+var ticks_per_minute: float = 1.0 # How many real seconds per game minute
 var elapsed_ticks: float = 0.0
 
 # Day/night cycle
-var day_start_hour: int = 6  # 6 AM
-var night_start_hour: int = 20  # 8 PM
+var day_start_hour: int = 6 # 6 AM
+var night_start_hour: int = 20 # 8 PM
 
 # Time of day periods
-var time_of_day: String = "Morning"  # Morning, Afternoon, Evening, Night
+var time_of_day: String = "Morning" # Morning, Afternoon, Evening, Night
 var active_hours = {
-	"start": 6,  # 6:00 AM
-	"end": 22    # 10:00 PM
+	"start": 6, # 6:00 AM
+	"end": 22 # 10:00 PM
 }
 
 # Weather system
@@ -69,7 +69,13 @@ var weather_chances = {
 func _ready():
 	# Initialize with starting time
 	update_time_of_day()
-	emit_signal("time_changed", time_of_day, current_minute, current_hour, current_day, get_season_name(), current_year)
+	emit_signal("time_changed",
+		time_of_day,
+		current_minute,
+		current_hour,
+		current_day,
+		get_season_name(),
+		current_year)
 	emit_signal("day_changed", current_day, get_season_name(), current_year)
 	emit_signal("season_changed", get_season_name(), current_year)
 	emit_signal("year_changed", current_year)
@@ -84,10 +90,10 @@ func _ready():
 func _process(delta: float) -> void:
 	if time_paused:
 		return
-	
+
 	# Update elapsed time
 	elapsed_ticks += delta * time_scale
-	
+
 	# Check if a minute has passed
 	if elapsed_ticks >= ticks_per_minute:
 		# Time for a new minute
@@ -103,37 +109,42 @@ func _process(delta: float) -> void:
 ###
 func update_time(delta: float) -> void:
 	current_minute += int(delta * TIME_SCALE)
-	
+
 	if current_minute >= MINUTES_PER_HOUR:
 		current_minute = 0
 		current_hour += 1
 		update_time_of_day()
-		
+
 	if current_hour >= HOURS_PER_DAY:
 		current_hour = 0
 		current_day += 1
 		emit_signal("day_changed", current_day, get_season_name(), current_year)
 		update_weather()
-		
+
 	if current_day > DAYS_PER_SEASON:
 		current_day = 1
 		current_season += 1
 		emit_signal("season_changed", get_season_name(), current_year)
-		
+
 	if current_season >= SEASONS_PER_YEAR:
 		current_season = 0
 		current_year += 1
 		emit_signal("year_changed", current_year)
-		
-	emit_signal("time_changed", time_of_day, current_minute, current_hour, 
-		current_day, get_season_name(), current_year)
+
+	emit_signal("time_changed",
+		time_of_day,
+		current_minute,
+		current_hour,
+		current_day,
+		get_season_name(),
+		current_year)
 
 ### update_time_of_day
 # Update the time of day period based on current hour
 ###
 func update_time_of_day() -> void:
 	var old_time = time_of_day
-	
+
 	if current_hour >= 5 and current_hour < 12:
 		time_of_day = "Morning"
 	elif current_hour >= 12 and current_hour < 17:
@@ -142,7 +153,7 @@ func update_time_of_day() -> void:
 		time_of_day = "Evening"
 	else:
 		time_of_day = "Night"
-		
+
 	if old_time != time_of_day:
 		print("Time of day changed to: " + time_of_day)
 
@@ -152,10 +163,10 @@ func update_time_of_day() -> void:
 func update_weather() -> void:
 	var season_name = get_season_name()
 	var chances = weather_chances[season_name]
-	
+
 	var rand_val = randf()
 	var cumulative = 0.0
-	
+
 	for weather in possible_weather:
 		cumulative += chances[weather]
 		if rand_val <= cumulative:

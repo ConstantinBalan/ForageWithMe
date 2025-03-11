@@ -10,9 +10,11 @@
 # Emits signals to:
 # - UI elements (relationship_changed, relationship_level_up)
 ###
+class_name RelationshipTracker
 extends Node
 
-class_name RelationshipTracker
+signal relationship_changed(new_value, new_level)
+signal relationship_level_up(new_level)
 
 # Reference to parent villager
 var villager: Villager
@@ -25,8 +27,8 @@ var gift_effects = {
 	"loved": 10.0,
 	"liked": 5.0,
 	"neutral": 2.0,
-	"disliked": -3.0,
-	"hated": -8.0
+	"disliked": - 3.0,
+	"hated": - 8.0
 }
 
 # Relationship levels and their thresholds
@@ -43,9 +45,6 @@ var relationship_levels = {
 var daily_interactions = 0
 var max_daily_interactions = 3
 
-signal relationship_changed(new_value, new_level)
-signal relationship_level_up(new_level)
-
 ### _init
 # Constructor that initializes the tracker with a reference to its parent villager
 # Loads any existing relationship data from player save
@@ -55,7 +54,7 @@ signal relationship_level_up(new_level)
 ###
 func _init(parent_villager: Villager):
 	villager = parent_villager
-	
+
 	# Load initial value from PlayerDataManager if available
 	load_relationship_data()
 
@@ -86,11 +85,11 @@ func get_relationship_value() -> float:
 ###
 func get_relationship_level() -> String:
 	var current_level = "stranger"
-	
+
 	for level in relationship_levels.keys():
 		if relationship_value >= relationship_levels[level]:
 			current_level = level
-	
+
 	return current_level
 
 ### adjust_relationship
@@ -105,18 +104,18 @@ func adjust_relationship(amount: float) -> void:
 	if daily_interactions >= max_daily_interactions and amount > 0:
 		# Diminishing returns after exceeding daily interaction limit
 		amount *= 0.25
-	
+
 	var old_level = get_relationship_level()
 	var old_value = relationship_value
-	
+
 	relationship_value = clamp(relationship_value + amount, 0.0, 100.0)
 	daily_interactions += 1
-	
+
 	# Save the updated relationship value
 	save_relationship_data()
-	
+
 	emit_signal("relationship_changed", relationship_value, get_relationship_level())
-	
+
 	# Check if level increased
 	var new_level = get_relationship_level()
 	if new_level != old_level and relationship_levels[new_level] > relationship_levels[old_level]:
@@ -137,7 +136,7 @@ func receive_gift(gift_item: Dictionary) -> float:
 	var item_id = gift_item.id
 	var preference = get_gift_preference(item_id)
 	var effect = gift_effects[preference]
-	
+
 	adjust_relationship(effect)
 	return effect
 
@@ -154,17 +153,16 @@ func receive_gift(gift_item: Dictionary) -> float:
 func get_gift_preference(item_id: String) -> String:
 	# Get villager preferences from their data
 	var preferences = villager.villager_data.gift_preferences
-	
+
 	if preferences.loved.has(item_id):
 		return "loved"
-	elif preferences.liked.has(item_id):
+	if preferences.liked.has(item_id):
 		return "liked"
-	elif preferences.disliked.has(item_id):
+	if preferences.disliked.has(item_id):
 		return "disliked"
-	elif preferences.hated.has(item_id):
+	if preferences.hated.has(item_id):
 		return "hated"
-	else:
-		return "neutral"
+	return "neutral"
 
 ### _on_day_changed
 # Signal callback for when the day changes
@@ -199,7 +197,7 @@ func load_relationship_data() -> void:
 	if player_data_manager:
 		var relationships = player_data_manager.player_data.player.relationships
 		var villager_id = villager.villager_data.id
-		
+
 		if relationships.has(villager_id):
 			relationship_value = relationships[villager_id].value
 			daily_interactions = relationships[villager_id].daily_interactions
