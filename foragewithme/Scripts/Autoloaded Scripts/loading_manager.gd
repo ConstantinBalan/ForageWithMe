@@ -32,12 +32,14 @@ var shaders = [
 	"res://Assets/Shaders/forest_area.gdshader",
 ]
 
-# Track loading progress
-var total_items_to_load = 0
-var items_loaded = 0
-var current_operation = ""
+var quirky_loading_messages = [
+	"Gathering acorns...",
+	"Herding squirrels...",
+	"Chasing fireflies...",
+	"Whispering to the trees...",
+	"Counting tree rings..."
+]
 
-# Reference to the loading screen
 var loading_screen = null
 
 # Reference to UI canvas layer
@@ -46,14 +48,10 @@ var ui_canvas_layer = null
 # Callable for shader compilation test
 var _test_shader_compilation = null
 
-# Quirky forest/animal-related loading messages
-var quirky_loading_messages = [
-	"Gathering acorns...",
-	"Herding squirrels...",
-	"Chasing fireflies...",
-	"Whispering to the trees...",
-	"Counting tree rings..."
-]
+# Track loading progress
+var total_items_to_load = 0
+var items_loaded = 0
+var current_operation = ""
 
 func _ready():
 	# Wait one frame to ensure everything is initialized
@@ -80,7 +78,9 @@ func _ensure_ui_canvas_layer():
 
 func start_game_loading():
 	# Calculate total items
-	total_items_to_load = ui_scenes.size() + gameplay_scenes.size() + character_scenes.size() + shaders.size() + 4 # +4 for resource categories
+	total_items_to_load = (
+		ui_scenes.size() + gameplay_scenes.size() + character_scenes.size() + shaders.size() + 4
+	) # +4 for resource categories
 	items_loaded = 0
 
 	# Make sure we have a UI canvas layer
