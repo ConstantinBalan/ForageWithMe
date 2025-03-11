@@ -41,7 +41,7 @@ func _ready():
 	position = Vector3(0, ARM_HEIGHT, 0)
 	rotation.y = INITIAL_Y_ROTATION
 	vertical_rotation = 0.0
-	
+
 	if inventory_controller:
 		inventory_controller.inventory_toggled.connect(_on_inventory_toggled)
 		print("CameraHolder: Connected to inventory controller")

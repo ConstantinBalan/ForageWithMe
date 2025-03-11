@@ -137,7 +137,7 @@ func handle_moonlight(current_angle: float) -> void:
 		#print("Moon is warm right now")
 		# Warmer color during twilight/early evening
 		moon_color = Color(1.0, 0.95, 0.8)
-	
+
 	moon_light.light_energy = moon_intensity
 	moon_light.light_color = moon_color
 

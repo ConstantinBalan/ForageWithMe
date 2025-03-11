@@ -39,6 +39,6 @@ func change_level(level_name: String, viewport: SubViewport):
 	# For example, setting up the player's starting position
 	if new_level.has_method("initialize"):
 		new_level.initialize()
-		
+
 func _on_save_game_requested(): # Example signal from a UI button
 	PlayerDataManager.save_game_data()

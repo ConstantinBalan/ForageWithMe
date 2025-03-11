@@ -116,7 +116,7 @@ func create_drag_preview(slot):
 	drag_preview.size = slot.size
 	drag_preview.modulate.a = 0.7
 	add_child(drag_preview)
-	
+
 	# Calculate offset so the item centers on the mouse
 	drag_offset = drag_preview.size / 2
 
@@ -148,7 +148,7 @@ func _on_slot_gui_input(event: InputEvent, slot):
 				dragged_slot.end_drag()
 				dragged_slot = null
 				remove_drag_preview()
-	
+
 	get_viewport().set_input_as_handled()
 
 func update_slot(slot_index: int, item_data: Dictionary) -> void:

@@ -11,6 +11,8 @@
 class_name Schedule
 extends Node
 
+signal activity_changed(new_activity)
+
 # Dictionary mapping time slots to activities
 # Format: { "day_season_hour": { type: "", location: Vector3, target: Node, duration: float } }
 var scheduled_activities = {}
@@ -18,8 +20,6 @@ var scheduled_activities = {}
 # Current activity
 var current_activity = null
 var current_activity_start_time = 0
-
-signal activity_changed(new_activity)
 
 ### initialize_for_villager
 # Sets up the schedule based on a specific villager's data

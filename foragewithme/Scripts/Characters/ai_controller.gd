@@ -14,13 +14,6 @@ extends Node
 
 signal state_changed(new_state)
 
-# Reference to the parent villager node
-var villager: Villager
-var current_state: String = "idle"
-var current_target: Node = null
-var current_path: Array = []
-var path_index: int = 0
-
 # States
 enum AIState {
 	IDLE,
@@ -29,6 +22,13 @@ enum AIState {
 	TALKING,
 	RESTING
 }
+
+# Reference to the parent villager node
+var villager: Villager
+var current_state: String = "idle"
+var current_target: Node = null
+var current_path: Array = []
+var path_index: int = 0
 
 # Current behavior and state
 var state: AIState = AIState.IDLE
@@ -227,7 +227,7 @@ func change_state(new_state: int):
 			villager.play_animation("talk")
 		AIState.RESTING:
 			villager.play_animation("rest")
-	
+
 	emit_signal("state_changed", state)
 
 ### set_path

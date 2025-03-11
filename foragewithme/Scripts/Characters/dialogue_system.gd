@@ -1,7 +1,7 @@
 ### DialogueSystem.gd
 # Manages dialogue interactions between villagers and the player
-# 
-# Called by: 
+#
+# Called by:
 # - Villager.gd (through AIController)
 # - UI/DialogueUI.gd (for player response selection)
 #
@@ -27,7 +27,7 @@ var relationship_tracker: RelationshipTracker
 ### _init
 # Constructor that initializes the DialogueSystem with a reference to its parent villager
 # and creates a new RelationshipTracker for that villager
-# 
+#
 # Parameters:
 # - parent_villager: The Villager node that owns this dialogue system
 ###
@@ -46,7 +46,7 @@ func _ready():
 ### start_dialogue_with_player
 # Begins a dialogue interaction between the villager and player
 # Gets appropriate dialogue options and displays the initial dialogue
-# 
+#
 # Parameters:
 # - player_ref: Reference to the Player node interacting with this villager
 ###
@@ -70,7 +70,7 @@ func start_dialogue_with_player(player_ref: Player) -> void:
 ### get_dialogue_options
 # Retrieves available dialogue options based on current context
 # Filters dialogues by time of day, season, relationship level, and whether they've been seen
-# 
+#
 # Returns:
 # - Array of DialogueData resources that are valid for the current context
 ###
@@ -93,7 +93,7 @@ func get_dialogue_options() -> Array:
 			# Check time of day constraint
 			if dialogue.time_of_day != "" and dialogue.time_of_day != time_of_day:
 				is_valid = false
-	
+
 			# Check season constraint
 			if dialogue.season != "" and dialogue.season != season:
 				is_valid = false
@@ -115,7 +115,7 @@ func get_dialogue_options() -> Array:
 ### display_current_dialogue
 # Shows the current dialogue text and response options to the player
 # Processes any variables in the text and updates the UI
-# 
+#
 # If no current dialogue exists, ends the dialogue session
 ###
 func display_current_dialogue() -> void:
@@ -144,10 +144,10 @@ func display_current_dialogue() -> void:
 ### process_dialogue_variables
 # Replaces variable placeholders in dialogue text with actual values
 # Currently supports {PLAYER_NAME}, {TIME}, and {SEASON}
-# 
+#
 # Parameters:
 # - text: The original dialogue text with placeholders
-# 
+#
 # Returns:
 # - String with all variables replaced by their actual values
 ###
@@ -168,7 +168,7 @@ func process_dialogue_variables(text: String) -> String:
 ### select_response
 # Handles the player selecting a response option
 # Applies relationship effects, and transitions to next dialogue if available
-# 
+#
 # Parameters:
 # - response_index: The index of the selected response
 ###
@@ -225,7 +225,7 @@ func mark_current_dialogue_as_seen() -> void:
 
 ### get_dialogue_state
 # Returns the current state of the dialogue system
-# 
+#
 # Returns:
 # - String: "active" if dialogue is ongoing, "inactive" otherwise
 ###
@@ -234,7 +234,7 @@ func get_dialogue_state() -> String:
 
 ### is_dialogue_active
 # Convenience function to check if dialogue is currently active
-# 
+#
 # Returns:
 # - bool: true if dialogue is active, false otherwise
 ###
@@ -243,7 +243,7 @@ func is_dialogue_active() -> bool:
 
 ### get_relationship_tracker
 # Provides access to the RelationshipTracker for this villager
-# 
+#
 # Returns:
 # - RelationshipTracker: The relationship tracker for this villager
 ###

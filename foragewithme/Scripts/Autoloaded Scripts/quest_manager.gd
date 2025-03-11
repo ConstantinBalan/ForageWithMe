@@ -125,7 +125,7 @@ func complete_quest(quest_id: String) -> bool:
 	active_quests.erase(quest_id)
 
 	# Handle rewards
-	give_quest_rewards(quest_id, quest.rewards)
+	give_quest_rewards(quest.rewards)
 
 	emit_signal("quest_completed", quest_id, quest.rewards)
 	print("Quest completed: " + quest_id)
@@ -163,10 +163,9 @@ func fail_quest(quest_id: String, reason: String = "") -> bool:
 # Process rewards for completed quests
 #
 # Parameters:
-# - quest_id: String identifier for the completed quest
 # - rewards: Dictionary of rewards to process
 ###
-func give_quest_rewards(quest_id: String, rewards: Dictionary) -> void:
+func give_quest_rewards(rewards: Dictionary) -> void:
 	# Handle different types of rewards
 	if rewards.has("items"):
 		for item in rewards.items:

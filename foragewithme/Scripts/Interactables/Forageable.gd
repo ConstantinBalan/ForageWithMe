@@ -59,7 +59,7 @@ func _process(delta: float) -> void:
 func interact_with(interactor: Node3D) -> void:
 	if not is_available or not interactor is Player or not forageable_data:
 		return
-	
+
 	forage(interactor as Player)
 
 func forage(player: Player) -> void:

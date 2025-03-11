@@ -26,10 +26,10 @@ func show_prompt(text: String, target_node: Node3D, duration: float = 2.0) -> vo
 	target = target_node
 	label_3d.text = text
 	is_visible = true
-	
+
 	# Don't call show() since we're using modulate alpha
 	animation_player.play("floating_prompt_animations/fade_in")
-	
+
 	if duration > 0:
 		await get_tree().create_timer(duration).timeout
 		hide_prompt()

@@ -125,7 +125,7 @@ func meets_dialogue_requirements(dialogue: DialogueData, player: Player) -> bool
 	for item in dialogue.required_items:
 		if not player.has_item(item):
 			return false
-	
+
 	# Check required quests
 	for quest in dialogue.required_quests_completed:
 		if not player.has_completed_quest(quest):

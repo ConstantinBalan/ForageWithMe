@@ -248,5 +248,5 @@ func load_from_data(data: Dictionary) -> void:
 	if data.has("season"): current_season = data.season
 	if data.has("year"): current_year = data.year
 	if data.has("weather"): current_weather = data.weather
-	
+
 	update_time_of_day()
