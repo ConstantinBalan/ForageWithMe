@@ -29,19 +29,19 @@ jobs:
       - name: Lint GDScript files
         run: |
           echo "Checking GDScript files for linting issues..."
-          find foragewithme -name "*.gd" -type f -print0 | xargs -0 -I{} gdlint {} || true
+          find foragewithme -name "*.gd" -type f -not -path "*/addons/*" -print0 | xargs -0 -I{} gdlint {} || true
       
       - name: Check file naming conventions
         run: |
           echo "Checking file naming conventions..."
           # Check for scene files (.tscn) using PascalCase
-          find foragewithme -name "*.tscn" -type f | grep -v '[A-Z][a-zA-Z0-9]*\.tscn$' > .tscn_naming_violations.txt
+          find foragewithme -name "*.tscn" -type f -not -path "*/addons/*" | grep -v '[A-Z][a-zA-Z0-9]*\.tscn$' > .tscn_naming_violations.txt
           
           # Check for script files (.gd) using snake_case
-          find foragewithme -name "*.gd" -type f | grep -v '[a-z][a-z0-9_]*\.gd$' > .gd_naming_violations.txt
+          find foragewithme -name "*.gd" -type f -not -path "*/addons/*" | grep -v '[a-z][a-z0-9_]*\.gd$' > .gd_naming_violations.txt
           
           # Check for resource files (.tres) using snake_case
-          find foragewithme -name "*.tres" -type f | grep -v '[a-z][a-z0-9_]*\.tres$' > .tres_naming_violations.txt
+          find foragewithme -name "*.tres" -type f -not -path "*/addons/*" | grep -v '[a-z][a-z0-9_]*\.tres$' > .tres_naming_violations.txt
           
           # Display violations
           echo "Scene file (.tscn) naming violations (should be PascalCase):"
@@ -77,7 +77,7 @@ jobs:
       - name: Run custom linting with configuration
         run: |
           echo "Running GDScript linting with custom configuration..."
-          find foragewithme -name "*.gd" -type f -print0 | xargs -0 -I{} gdlint --config gdlint.toml {} || true
+          find foragewithme -name "*.gd" -type f -not -path "*/addons/*" -print0 | xargs -0 -I{} gdlint --config gdlint.toml {} || true
       
       - name: Run comprehensive custom linting
         run: |
@@ -116,3 +116,5 @@ jobs:
           echo "   - Public methods"
           echo "   - Private methods"
           echo "   - Signal callbacks"
+          echo ""
+          echo "Note: Files in the 'addons' directory are excluded from linting"

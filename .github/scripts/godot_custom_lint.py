@@ -22,6 +22,16 @@ SCRIPT_STRUCTURE_ORDER = [
     r"func _on_[a-z][a-z0-9_]*\("              # Signal callbacks
 ]
 
+# Directories to exclude from linting
+EXCLUDED_DIRECTORIES = ["addons"]
+
+def should_exclude(file_path):
+    """Check if file should be excluded from linting."""
+    for excluded_dir in EXCLUDED_DIRECTORIES:
+        if f"{os.sep}{excluded_dir}{os.sep}" in file_path:
+            return True
+    return False
+
 def check_naming_conventions(file_path, content):
     """Check if the file adheres to naming conventions."""
     issues = []
@@ -150,6 +160,11 @@ def check_file(file_path):
         print(f"Error: File {file_path} not found")
         return 1
     
+    # Skip excluded files
+    if should_exclude(file_path):
+        print(f"Skipping excluded file: {file_path}")
+        return 0
+    
     with open(file_path, "r", encoding="utf-8") as f:
         content = f.read()
     
@@ -169,9 +184,14 @@ def check_file(file_path):
 def scan_directory(directory):
     """Scan a directory for GDScript files and check them."""
     error_count = 0
-    gd_files = list(Path(directory).rglob("*.gd"))
+    gd_files = []
     
-    print(f"Scanning {len(gd_files)} GDScript files in {directory}")
+    # Get all .gd files, filtering out excluded directories
+    for path in Path(directory).rglob("*.gd"):
+        if not should_exclude(str(path)):
+            gd_files.append(path)
+    
+    print(f"Scanning {len(gd_files)} GDScript files in {directory} (excluding addons)")
     
     for file_path in gd_files:
         error_count += check_file(str(file_path))
@@ -189,7 +209,8 @@ if __name__ == "__main__":
     if os.path.isdir(target):
         errors = scan_directory(target)
     else:
-        errors = check_file(target)
+        if not should_exclude(target):
+            errors = check_file(target)
     
     if errors:
         print(f"\nFound {errors} linting issues")
