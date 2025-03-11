@@ -47,9 +47,9 @@ func _ready():
 		print("CameraHolder: Connected to inventory controller")
 
 func create_shape() -> Shape3D:
-	var shape = SphereShape3D.new()
-	shape.radius = 0.25
-	return shape
+	var custom_shape = SphereShape3D.new()
+	custom_shape.radius = 0.25
+	return custom_shape
 
 # Normalize angle to find shortest rotation path
 func normalize_angle(angle: float) -> float:

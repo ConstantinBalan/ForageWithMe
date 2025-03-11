@@ -13,6 +13,8 @@ var current_level = null
 @onready var player = $Player
 
 func _ready():
+	LoadingManager.start_game_loading()
+	await LoadingManager.all_loading_completed
 	print("Game is ready.")
 	# Potentially initialize systems here if they need explicit setup
 	# systems.get_node("ForagingSystem").initialize()

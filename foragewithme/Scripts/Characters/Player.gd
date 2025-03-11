@@ -73,8 +73,8 @@ func handle_movement_intent(delta):
 		direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	else:
 		# During orbit, use the stored initial rotation for movement
-		var basis = Transform3D(Basis.from_euler(Vector3(0, camera_holder.initial_player_rotation, 0)))
-		direction = (basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+		var view_basis = Transform3D(Basis.from_euler(Vector3(0, camera_holder.initial_player_rotation, 0)))
+		direction = (view_basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 
 	# Apply movement
 	if direction:
