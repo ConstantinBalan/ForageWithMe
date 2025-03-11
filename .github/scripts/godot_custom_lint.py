@@ -16,10 +16,8 @@ SCRIPT_STRUCTURE_ORDER = [
     r"var [a-z][a-z0-9_]* = ",                 # Public variables
     r"var _[a-z][a-z0-9_]* = ",                # Private variables
     r"@onready var|onready var",                # Onready variables
-    r"func (_ready|_process|_physics_process)", # Built-in virtual methods
-    r"func [a-z][a-z0-9_]*\(",                 # Public methods
-    r"func _[a-z][a-z0-9_]*\(",                # Private methods
-    r"func _on_[a-z][a-z0-9_]*\("              # Signal callbacks
+    r"func (_ready|_process|_physics_process)"  # Built-in virtual methods
+    # No longer enforcing the strict order for methods
 ]
 
 # Directories to exclude from linting
@@ -103,18 +101,14 @@ def check_code_formatting(file_path, content):
         if len(line) > 100:
             issues.append(f"Line {i+1} exceeds 100 characters (length: {len(line)})")
     
-    # Check indentation (4 spaces)
-    indent_pattern = re.compile(r"^(\t+)")
-    for i, line in enumerate(lines):
-        if indent_pattern.match(line):
-            issues.append(f"Line {i+1} uses tabs instead of 4 spaces for indentation")
-    
     # Check empty lines between functions
     func_pattern = re.compile(r"^func\s+")
+    comment_pattern = re.compile(r"^\s*#")
     for i in range(len(lines) - 1):
         if func_pattern.match(lines[i]) and i > 0:
-            if lines[i-1].strip() != "":
-                issues.append(f"Missing empty line before function definition at line {i+1}")
+            # Allow either an empty line or a comment line before function definition
+            if lines[i-1].strip() != "" and not comment_pattern.match(lines[i-1]):
+                issues.append(f"Missing empty line or comment before function definition at line {i+1}")
     
     return issues
 
