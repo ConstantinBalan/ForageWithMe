@@ -10,9 +10,9 @@ import sys
 from pathlib import Path
 
 SCRIPT_STRUCTURE_ORDER = [
-    r"(class_name|tool)",                       # Class/tool declarations
-    r"(enum|const)",                            # Enums and constants
-    r"export",                                  # Exported variables
+    r"(class_name|tool|extends)",                # Class/tool declarations and extends statements
+    r"^enum\s|^const\s",                        # Only match standalone enums and constants (not part of @export_enum)
+    r"(@export|export)",                         # Exported variables (include both Godot 4.0+ @export and older export)
     r"var [a-z][a-z0-9_]* = ",                 # Public variables
     r"var _[a-z][a-z0-9_]* = ",                # Private variables
     r"@onready var|onready var",                # Onready variables
