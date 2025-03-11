@@ -1,5 +1,6 @@
 extends Node
 
+# Signals
 signal shader_compilation_completed
 signal resource_preload_completed
 signal scene_preload_completed
@@ -32,26 +33,24 @@ var shaders = [
 	"res://Assets/Shaders/forest_area.gdshader",
 ]
 
-var quirky_loading_messages = [
-	"Gathering acorns...",
-	"Herding squirrels...",
-	"Chasing fireflies...",
-	"Whispering to the trees...",
-	"Counting tree rings..."
-]
-
+# Runtime references (should come after other variables)
 var loading_screen = null
-
-# Reference to UI canvas layer
 var ui_canvas_layer = null
-
-# Callable for shader compilation test
 var _test_shader_compilation = null
 
 # Track loading progress
 var total_items_to_load = 0
 var items_loaded = 0
 var current_operation = ""
+
+# Loading messages (using underscore prefix for "private" variables)
+var _quirky_loading_messages = [
+    "Gathering acorns...",
+    "Herding squirrels...",
+    "Chasing fireflies...",
+    "Whispering to the trees...",
+    "Counting tree rings..."
+]
 
 func _ready():
 	# Wait one frame to ensure everything is initialized
@@ -175,7 +174,7 @@ func _preload_scenes(scene_list):
 func _update_loading_screen():
 	if loading_screen:
 		loading_screen.set_progress(items_loaded, total_items_to_load)
-		current_operation = get_random_loading_message() # Select a new random message
+		current_operation = _get_random_loading_message() # Select a new random message
 		loading_screen.set_status(current_operation)
 
 # Transition to a new scene with loading screen
@@ -218,5 +217,5 @@ func change_scene(target_scene_path):
 
 	loading_screen.finish_loading()
 
-func get_random_loading_message():
-	return quirky_loading_messages[randi() % quirky_loading_messages.size()]
+func _get_random_loading_message():
+	return _quirky_loading_messages[randi() % _quirky_loading_messages.size()]
