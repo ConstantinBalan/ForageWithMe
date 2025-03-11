@@ -1,0 +1,47 @@
+[gd_scene load_steps=6 format=3 uid="uid://dwb5dtnmdeslb"]
+
+[ext_resource type="Script" uid="uid://iq7dekmmnhg7" path="res://Scripts/Characters/Player.gd" id="1_player"]
+[ext_resource type="Script" uid="uid://dl20vj8i68rhk" path="res://Scripts/Characters/camera_holder.gd" id="2_camera"]
+[ext_resource type="Script" uid="uid://cpxvhtcq0v2x" path="res://Scripts/Characters/PlayerInventoryController.gd" id="3_gg48m"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_player"]
+radius = 0.3
+height = 1.8
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_oujj1"]
+
+[node name="Player" type="CharacterBody3D"]
+collision_layer = 2
+script = ExtResource("1_player")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.871446, 0)
+shape = SubResource("CapsuleShape3D_player")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.899037, 0)
+mesh = SubResource("CapsuleMesh_oujj1")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(-0.00217957, -0.553607, 0, 0.999024, -0.0012078, 0, 0, 0, 1, 0.230852, 1.3926, 0)
+mesh = SubResource("CapsuleMesh_oujj1")
+
+[node name="CameraHolder" type="SpringArm3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 1.6, 0)
+spring_length = 4.0
+margin = 0.25
+script = ExtResource("2_camera")
+
+[node name="Camera3D" type="Camera3D" parent="CameraHolder"]
+current = true
+
+[node name="InteractionRay" type="RayCast3D" parent="CameraHolder/Camera3D"]
+unique_name_in_owner = true
+target_position = Vector3(0, 0, -5)
+collision_mask = 2
+collide_with_areas = true
+debug_shape_custom_color = Color(0, 0, 1, 1)
+debug_shape_thickness = 1
+
+[node name="Inventory" type="Node" parent="." groups=["player"]]
+script = ExtResource("3_gg48m")

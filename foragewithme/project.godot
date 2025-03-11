@@ -11,19 +11,20 @@ config_version=5
 [application]
 
 config/name="ForageWithMe"
-run/main_scene="res://Scenes/forest_area.tscn"
-config/features=PackedStringArray("4.3", "Forward Plus")
+run/main_scene="res://Scenes/Zones/forest_area.tscn"
+config/features=PackedStringArray("4.4", "Forward Plus")
 
 [audio]
 
-buses/default_bus_layout="res://Audio/default_bus_layout.tres"
+buses/default_bus_layout="res://Assets/Audio/default_bus_layout.tres"
 
 [autoload]
 
 PlayerDataManager="*res://Scripts/Autoloaded Scripts/player_data_manager.gd"
 GameManager="*res://Scripts/Autoloaded Scripts/game_manager.gd"
 WorldManager="*res://Scripts/Autoloaded Scripts/world_manager.gd"
-ComponentManager="*res://Scripts/ECS/Component Scripts/ComponentManager.gd"
+ForagingMiniGameManager="*res://Scripts/Foraging/foraging_manager.gd"
+MiniGameTutorialManager="*res://Scripts/OOP/Tutorial/tutorial_manager.gd"
 
 [display]
 
@@ -35,14 +36,17 @@ window/size/viewport_height=1080
 movie_writer/mjpeg_quality=0.5
 movie_writer/movie_file="C:/Users/Dragos/Desktop/GodotMovies/Test.avi"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/resource_creator/plugin.cfg")
+
 [global_group]
 
 player="The group assigned to the player and player related objects"
-movement_system="The group for the movement system"
 interactable="Interactable objects in the world"
-interaction_system=""
 villager=""
-inventory_panel=""
+inventory_ui=""
+ui_layer=""
 
 [input]
 
@@ -84,5 +88,10 @@ Jump={
 Inventory={
 "deadzone": 0.5,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":73,"key_label":0,"unicode":105,"location":0,"echo":false,"script":null)
+]
+}
+Secondary_Interact={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":70,"key_label":0,"unicode":102,"location":0,"echo":false,"script":null)
 ]
 }
