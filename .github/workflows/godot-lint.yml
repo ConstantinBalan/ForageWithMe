@@ -1,0 +1,118 @@
+name: Godot Linting
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: Lint Godot Code
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install gdtoolkit
+      
+      - name: Lint GDScript files
+        run: |
+          echo "Checking GDScript files for linting issues..."
+          find foragewithme -name "*.gd" -type f -print0 | xargs -0 -I{} gdlint {} || true
+      
+      - name: Check file naming conventions
+        run: |
+          echo "Checking file naming conventions..."
+          # Check for scene files (.tscn) using PascalCase
+          find foragewithme -name "*.tscn" -type f | grep -v '[A-Z][a-zA-Z0-9]*\.tscn$' > .tscn_naming_violations.txt
+          
+          # Check for script files (.gd) using snake_case
+          find foragewithme -name "*.gd" -type f | grep -v '[a-z][a-z0-9_]*\.gd$' > .gd_naming_violations.txt
+          
+          # Check for resource files (.tres) using snake_case
+          find foragewithme -name "*.tres" -type f | grep -v '[a-z][a-z0-9_]*\.tres$' > .tres_naming_violations.txt
+          
+          # Display violations
+          echo "Scene file (.tscn) naming violations (should be PascalCase):"
+          cat .tscn_naming_violations.txt
+          echo "Script file (.gd) naming violations (should be snake_case):"
+          cat .gd_naming_violations.txt
+          echo "Resource file (.tres) naming violations (should be snake_case):"
+          cat .tres_naming_violations.txt
+          
+          # Fail if any violations are found
+          [ ! -s .tscn_naming_violations.txt ] && [ ! -s .gd_naming_violations.txt ] && [ ! -s .tres_naming_violations.txt ]
+
+      - name: Create custom gdlint.toml file
+        run: |
+          cat > gdlint.toml << 'EOF'
+          # Linting rules for GDScript according to project standards
+          
+          # Formatting rules
+          line_length = 100
+          indent_size = 4
+          
+          # Naming rules
+          function_name = "snake_case"
+          variable_name = "snake_case"
+          constant_name = "UPPER_SNAKE_CASE"
+          class_name = "PascalCase"
+          
+          # Spacing rules
+          class_definitions_per_file = 1
+          empty_line_between_functions = true
+          EOF
+      
+      - name: Run custom linting with configuration
+        run: |
+          echo "Running GDScript linting with custom configuration..."
+          find foragewithme -name "*.gd" -type f -print0 | xargs -0 -I{} gdlint --config gdlint.toml {} || true
+      
+      - name: Run comprehensive custom linting
+        run: |
+          echo "Running comprehensive custom linting..."
+          chmod +x .github/scripts/godot_custom_lint.py
+          python .github/scripts/godot_custom_lint.py foragewithme
+          
+      - name: Summary
+        run: |
+          echo "==== Linting Summary ===="
+          echo "The linting process checked for the following standards:"
+          echo "1. Naming Conventions:"
+          echo "   - Classes/Nodes: PascalCase"
+          echo "   - Variables: snake_case"
+          echo "   - Constants: UPPER_SNAKE_CASE"
+          echo "   - Functions: snake_case"
+          echo "   - Signals: snake_case"
+          echo "   - Enum Values: UPPER_SNAKE_CASE"
+          echo "2. File Naming:"
+          echo "   - Scene Files (.tscn): PascalCase"
+          echo "   - Script Files (.gd): snake_case" 
+          echo "   - Resource Files (.tres): snake_case"
+          echo "3. Code Formatting:"
+          echo "   - 4 spaces for indentation"
+          echo "   - Lines under 100 characters"
+          echo "   - One empty line between functions"
+          echo "   - Two empty lines between classes"
+          echo "4. Script Structure Order:"
+          echo "   - Class/tool declarations"
+          echo "   - Enums and constants"
+          echo "   - Exported variables"
+          echo "   - Public variables"
+          echo "   - Private variables"
+          echo "   - Onready variables"
+          echo "   - Built-in virtual methods"
+          echo "   - Public methods"
+          echo "   - Private methods"
+          echo "   - Signal callbacks"
