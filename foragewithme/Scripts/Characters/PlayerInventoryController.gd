@@ -120,7 +120,7 @@ func add_item(item_name: String, item_texture: Texture2D = null) -> bool:
 				inventory_data[i] = item_data
 				inventory_panel.update_slot(i, item_data)
 				return true
-	
+
 			if inventory_data[i] and inventory_data[i].name == item_name:
 				# Stack with existing item
 				inventory_data[i].quantity += 1
