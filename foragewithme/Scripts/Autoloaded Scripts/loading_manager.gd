@@ -6,15 +6,17 @@ signal resource_preload_completed
 signal scene_preload_completed
 signal all_loading_completed
 
-# Constant paths
+# Constants first
 const LOADING_SCREEN_PATH = "res://Scenes/UI/loading_screen.tscn"
 
-# Track loading progress
+# Simple public variables next
 var total_items_to_load = 0
 var items_loaded = 0
 var current_operation = ""
+var loading_screen = null
+var ui_canvas_layer = null
 
-# Resource lists to preload - customize these as needed
+# Resource arrays (complex public variables)
 var ui_scenes = [
 	"res://Scenes/UI/floating_prompt.tscn",
 	"res://Scenes/UI/inventory_ui.tscn",
@@ -38,7 +40,8 @@ var shaders = [
 	"res://Assets/Shaders/forest_area.gdshader",
 ]
 
-# Loading messages (using underscore prefix for "private" variables)
+# Private variables (with underscore prefix) last
+var _test_shader_compilation = null
 var _quirky_loading_messages = [
     "Gathering acorns...",
     "Herding squirrels...",
@@ -46,11 +49,6 @@ var _quirky_loading_messages = [
     "Whispering to the trees...",
     "Counting tree rings..."
 ]
-
-# Runtime references
-var loading_screen = null
-var ui_canvas_layer = null
-var _test_shader_compilation = null
 
 func _ready():
 	# Wait one frame to ensure everything is initialized
