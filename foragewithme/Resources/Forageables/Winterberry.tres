@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ForageableItem" load_steps=5 format=3 uid="uid://0wf683vikogh"]
+[gd_resource type="Resource" script_class="ForageableItem" load_steps=5 format=3 uid="uid://cu7myg52wcxxa"]
 
 [ext_resource type="Script" uid="uid://bpvd13e5e6b7s" path="res://Scripts/Resources/forageable_item.gd" id="1_k5f62"]
 [ext_resource type="Texture2D" uid="uid://dqn26g1khgkwo" path="res://Assets/Textures/Items/pngtree-watercolor-red-winter-berry-christmas-holly-branches-decor-png-image_13372992.png" id="2_relgm"]
