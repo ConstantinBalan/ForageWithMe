@@ -37,7 +37,7 @@ func add_item(item_id: String, amount: int = 1) -> bool:
 		inventory[item_id] += amount
 	else:
 		inventory[item_id] = amount
-	emit_signal("inventory_changed")
+	inventory_changed.emit()
 	return true
 
 func remove_item(item_id: String, amount: int = 1) -> bool:
@@ -45,7 +45,7 @@ func remove_item(item_id: String, amount: int = 1) -> bool:
 		inventory[item_id] -= amount
 		if inventory[item_id] <= 0:
 			inventory.erase(item_id)
-		emit_signal("inventory_changed")
+		inventory_changed.emit()
 		return true
 	return false
 
@@ -55,7 +55,7 @@ func change_relationship(character_id: String, amount: float) -> void:
 		relationships[character_id] += amount
 	else:
 		relationships[character_id] = amount
-	emit_signal("relationship_changed", character_id)
+	relationship_changed.emit(character_id)
 
 func get_relationship(character_id: String) -> float:
 	return relationships.get(character_id, 0.0)
