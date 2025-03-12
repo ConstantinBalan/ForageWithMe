@@ -20,7 +20,7 @@ func show_label(game_object: GameObject, text: String) -> void:
 		return
 
 	# Create new prompt
-	var prompt = FloatingPromptScene.instantiate()
+	var prompt = FLOATING_PROMPT_SCENE.instantiate()
 	add_child(prompt)
 	prompt.offset = label_offset
 	prompt.show_prompt(text, game_object, 0) # Duration 0 means it stays until hidden
