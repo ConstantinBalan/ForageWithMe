@@ -59,7 +59,7 @@ func start_dialogue_with_player(player_ref: Player) -> void:
 
 	if dialogue_options.size() > 0:
 		current_dialogue = dialogue_options[0] # Pick first for now, could be randomized
-		emit_signal("dialogue_started", villager.villager_data.id)
+		dialogue_started.emit(villager.villager_data.id)
 
 		# Display initial dialogue
 		display_current_dialogue()
@@ -178,7 +178,7 @@ func select_response(response_index: int) -> void:
 		return
 
 	var response = current_dialogue_options[response_index]
-	emit_signal("dialogue_response_selected", response_index)
+	dialogue_response_selected.emit(response_index)
 
 	# Apply relationship effects
 	if response.relationship_effect != 0:
@@ -209,7 +209,7 @@ func end_dialogue() -> void:
 	dialogue_state = "inactive"
 	current_dialogue = null
 	current_dialogue_options = []
-	emit_signal("dialogue_ended", villager.villager_data.id)
+	dialogue_ended.emit(villager.villager_data.id)
 
 	# Hide dialogue UI
 	var dialogue_ui = get_tree().get_root().get_node_or_null("DialogueUI")

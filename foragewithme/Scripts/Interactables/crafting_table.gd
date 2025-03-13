@@ -57,7 +57,7 @@ func start_crafting(recipe: RecipeData, player: Player) -> bool:
 
 	is_in_use = true
 	current_recipe = recipe
-	emit_signal("crafting_started", recipe)
+	crafting_started.emit(recipe)
 
 	# Play crafting effects if available
 	if recipe.crafting_effect:
@@ -81,7 +81,7 @@ func _on_crafting_completed(player: Player) -> void:
 		return
 
 	player.add_item(current_recipe.result_item, current_recipe.result_amount)
-	emit_signal("crafting_completed", current_recipe)
+	crafting_completed.emit(current_recipe)
 
 	is_in_use = false
 	current_recipe = null

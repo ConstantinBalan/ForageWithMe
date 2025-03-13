@@ -76,7 +76,7 @@ func forage(player: Player) -> void:
 		if player.add_item_with_texture(forageable_data.name, forageable_data.texture):
 			is_available = false
 			time_since_foraged = 0.0
-			emit_signal("foraged", forageable_data)
+			foraged.emit(forageable_data)
 			if mesh_instance:
 				if collision_mask == 1 and forageable_data.collected_mesh:
 					# Use the collected mesh from the resource

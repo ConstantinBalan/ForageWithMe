@@ -162,13 +162,13 @@ func get_current_activity() -> Dictionary:
 			if current_activity != scheduled_activities[key]:
 				current_activity = scheduled_activities[key]
 				current_activity_start_time = Time.get_unix_time_from_system()
-				emit_signal("activity_changed", current_activity)
+				activity_changed.emit(current_activity)
 			return current_activity
 
 	# No activity scheduled, return an empty dictionary
 	if current_activity != null:
 		current_activity = null
-		emit_signal("activity_changed", null)
+		activity_changed.emit(null)
 
 	return {}
 
@@ -263,11 +263,11 @@ duration: float = 1.0) -> void:
 
 	current_activity = activity
 	current_activity_start_time = Time.get_unix_time_from_system()
-	emit_signal("activity_changed", current_activity)
+	activity_changed.emit(current_activity)
 
 ### clear_temporary_activities
 # Removes all temporary activities, returning to the regular schedule
 ###
 func clear_temporary_activities() -> void:
 	current_activity = null
-	emit_signal("activity_changed", null)
+	activity_changed.emit(null)
