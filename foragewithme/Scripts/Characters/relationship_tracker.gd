@@ -114,12 +114,12 @@ func adjust_relationship(amount: float) -> void:
 	# Save the updated relationship value
 	save_relationship_data()
 
-	emit_signal("relationship_changed", relationship_value, get_relationship_level())
+	relationship_changed.emit(relationship_value, get_relationship_level())
 
 	# Check if level increased
 	var new_level = get_relationship_level()
 	if new_level != old_level and relationship_levels[new_level] > relationship_levels[old_level]:
-		emit_signal("relationship_level_up", new_level)
+		relationship_level_up.emit(new_level)
 		print("Relationship with " + villager.villager_data.name + " leveled up to " + new_level)
 
 ### receive_gift

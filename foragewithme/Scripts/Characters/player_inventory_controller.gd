@@ -54,7 +54,7 @@ func open_inventory():
 	player.set_process_input(false)
 	player.set_physics_process(false)
 
-	emit_signal("inventory_toggled", true)
+	inventory_toggled.emit(true)
 
 func close_inventory():
 	if !inventory_panel or !player:
@@ -70,7 +70,7 @@ func close_inventory():
 	player.set_process_input(true)
 	player.set_physics_process(true)
 
-	emit_signal("inventory_toggled", false)
+	inventory_toggled.emit(false)
 
 func _on_inventory_item_moved(from_index: int, to_index: int) -> void:
 	var from_item = inventory_data[from_index]

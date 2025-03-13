@@ -126,7 +126,7 @@ func _preload_all_resources():
 	_update_loading_screen()
 	await get_tree().create_timer(0.3).timeout
 
-	emit_signal("all_loading_completed")
+	all_loading_completed.emit()
 	loading_screen.finish_loading()
 
 func _compile_shaders():
@@ -141,7 +141,7 @@ func _compile_shaders():
 		await get_tree().process_frame
 
 	await get_tree().process_frame
-	emit_signal("shader_compilation_completed")
+	shader_compilation_completed.emit()
 
 func _ensure_resources_loaded():
 	# Make sure GameResourceLoader has loaded all resources
@@ -157,7 +157,7 @@ func _ensure_resources_loaded():
 		_update_loading_screen()
 
 	await get_tree().process_frame
-	emit_signal("resource_preload_completed")
+	resource_preload_completed.emit()
 
 func _preload_scenes(scene_list):
 	for scene_path in scene_list:
@@ -167,7 +167,7 @@ func _preload_scenes(scene_list):
 		_update_loading_screen()
 		await get_tree().process_frame
 
-	emit_signal("scene_preload_completed")
+	scene_preload_completed.emit()
 
 func _update_loading_screen():
 	if loading_screen:

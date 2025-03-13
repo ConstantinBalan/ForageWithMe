@@ -121,4 +121,4 @@ func _on_loading_complete():
 		# Just hide the loading screen
 		visible = false
 
-	emit_signal("loading_completed")
+	loading_completed.emit()

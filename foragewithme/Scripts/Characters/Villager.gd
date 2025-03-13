@@ -71,7 +71,7 @@ func start_dialogue(player: Player) -> void:
 		# Show sleeping prompt
 		return
 
-	emit_signal("dialogue_started", self)
+	dialogue_started.emit(self)
 
 	# Get available dialogue options based on relationship level
 	current_dialogue_options.clear()
@@ -105,7 +105,7 @@ func start_dialogue(player: Player) -> void:
 			$AudioStreamPlayer3D.play()
 
 func end_dialogue() -> void:
-	emit_signal("dialogue_ended", self)
+	dialogue_ended.emit(self)
 	current_dialogue = null
 	current_dialogue_options.clear()
 

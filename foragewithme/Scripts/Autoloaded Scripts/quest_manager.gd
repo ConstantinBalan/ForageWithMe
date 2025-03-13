@@ -69,7 +69,7 @@ func add_quest(quest_id: String) -> bool:
 		quest_data.started_at = Time.get_unix_time_from_system()
 		active_quests[quest_id] = quest_data
 
-		emit_signal("quest_added", quest_id)
+		quest_added.emit(quest_id)
 		print("Quest added: " + quest_id)
 		return true
 	print("Quest not found: " + quest_id)
@@ -93,7 +93,7 @@ func update_quest_progress(quest_id: String, progress_amount: int) -> bool:
 	var quest = active_quests[quest_id]
 	quest.progress += progress_amount
 
-	emit_signal("quest_updated", quest_id, quest.progress)
+	quest_updated.emit(quest_id, quest.progress)
 	print("Updated progress for quest %s: %d/%d" % [quest_id, quest.progress, quest.required_progress])
 
 	# Check if quest is now complete
@@ -127,7 +127,7 @@ func complete_quest(quest_id: String) -> bool:
 	# Handle rewards
 	give_quest_rewards(quest.rewards)
 
-	emit_signal("quest_completed", quest_id, quest.rewards)
+	quest_completed.emit(quest_id, quest.rewards)
 	print("Quest completed: " + quest_id)
 	return true
 
@@ -155,7 +155,7 @@ func fail_quest(quest_id: String, reason: String = "") -> bool:
 	failed_quests[quest_id] = failure_data
 	active_quests.erase(quest_id)
 
-	emit_signal("quest_failed", quest_id)
+	quest_failed.emit(quest_id)
 	print("Quest failed: " + quest_id + (", Reason: " + reason if reason else ""))
 	return true
 
