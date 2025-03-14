@@ -228,7 +228,7 @@ func change_state(new_state: int):
 		AIState.RESTING:
 			villager.play_animation("rest")
 
-	emit_signal("state_changed", state)
+	state_changed.emit(state)
 
 ### set_path
 # Sets the movement path for the villager and starts walking

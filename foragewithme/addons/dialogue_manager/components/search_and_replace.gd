@@ -169,7 +169,7 @@ func _on_input_gui_input(event: InputEvent) -> void:
 			"Enter":
 				search(input.text)
 			"Escape":
-				emit_signal("close_requested")
+				close_requested.emit()
 
 
 func _on_replace_button_pressed() -> void:

@@ -41,4 +41,4 @@ func start_foraging(item_data: Dictionary) -> void:
 	await get_tree().create_timer(0.5).timeout
 
 	# Emit completion signal
-	emit_signal("foraging_completed", success, active_item)
+	foraging_completed.emit(success, active_item)

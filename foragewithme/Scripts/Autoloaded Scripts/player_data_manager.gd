@@ -69,7 +69,7 @@ func load_game_data():
 
 					# Emit any necessary signals
 					if "inventory_changed" in player.get_signal_list():
-						player.emit_signal("inventory_changed")
+						player.inventory_changed.emit()
 		else:
 			printerr("Error loading game data: Invalid save file format.")
 		file.close()

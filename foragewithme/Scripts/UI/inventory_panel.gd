@@ -139,7 +139,7 @@ func _on_slot_gui_input(event: InputEvent, slot):
 				var to_index = inventory_slots.find(to_slot)
 
 				if from_index != -1 and to_index != -1 and from_index != to_index:
-					emit_signal("item_moved", from_index, to_index)
+					item_moved.emit(from_index, to_index)
 
 				if hovered_slot:
 					hovered_slot.add_theme_stylebox_override("panel", hovered_slot.default_style)

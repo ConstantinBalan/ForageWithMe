@@ -69,16 +69,16 @@ var weather_chances = {
 func _ready():
 	# Initialize with starting time
 	update_time_of_day()
-	emit_signal("time_changed",
+	time_changed.emit(
 		time_of_day,
 		current_minute,
 		current_hour,
 		current_day,
 		get_season_name(),
 		current_year)
-	emit_signal("day_changed", current_day, get_season_name(), current_year)
-	emit_signal("season_changed", get_season_name(), current_year)
-	emit_signal("year_changed", current_year)
+	day_changed.emit(current_day, get_season_name(), current_year)
+	season_changed.emit(get_season_name(), current_year)
+	year_changed.emit(current_year)
 
 ### _process
 # Called every frame to update the time system
@@ -118,20 +118,20 @@ func update_time(delta: float) -> void:
 	if current_hour >= HOURS_PER_DAY:
 		current_hour = 0
 		current_day += 1
-		emit_signal("day_changed", current_day, get_season_name(), current_year)
+		day_changed.emit(current_day, get_season_name(), current_year)
 		update_weather()
 
 	if current_day > DAYS_PER_SEASON:
 		current_day = 1
 		current_season += 1
-		emit_signal("season_changed", get_season_name(), current_year)
+		season_changed.emit(get_season_name(), current_year)
 
 	if current_season >= SEASONS_PER_YEAR:
 		current_season = 0
 		current_year += 1
-		emit_signal("year_changed", current_year)
+		year_changed.emit(current_year)
 
-	emit_signal("time_changed",
+	time_changed.emit(
 		time_of_day,
 		current_minute,
 		current_hour,
